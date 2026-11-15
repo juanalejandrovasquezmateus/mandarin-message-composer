@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "d43c00bd-c7d0-4693-a092-7e061a5f3a37",
+    "status": "approved",
+    "chinese": "阿姨，晚饭很好吃。",
+    "pinyin": "Ā yí, wǎn fàn hěn hǎo chī.",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "ef9c5bed-45c5-4592-b421-09af710772eb",
+    "status": "approved",
+    "chinese": "阿姨，这份晚餐做的特别棒！",
+    "pinyin": "Ā yí, zhè fèn wǎn cān zuò de tè bié bàng!",
+    "changed": true,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "supportive",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "01f791b0-cbbc-4d1b-bbb2-2b0deaa4ba38",
+    "status": "approved",
+    "chinese": "妈妈,突然想跟你说一声:我好爱你呀!",
+    "pinyin": "Mā ma , tū rán xiǎng gēn nǐ shuō yì shēng : wǒ hǎo ài nǐ ya !",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "",
+    "date": "2026-11-15"
+  }
+]

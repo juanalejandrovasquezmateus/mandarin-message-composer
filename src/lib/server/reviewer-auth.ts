@@ -1,6 +1,6 @@
 // Shared reviewer codes, set in .env.local. REVIEWER_CODE is the official
 // native checker; COMMUNITY_CODE (optional) marks lines as community-checked.
-import type { ReviewerLevel } from "../types";
+import type { ReviewerLevel, TargetLanguage } from "../types";
 
 export function reviewerLevelFor(req: Request): ReviewerLevel | null {
   const code = req.headers.get("x-reviewer-code")?.trim();
@@ -16,12 +16,18 @@ export function reviewerConfigured(): boolean {
   return Boolean(process.env.REVIEWER_CODE?.trim());
 }
 
-/** The official checker's name is fixed in the environment, not typed. */
-export function officialReviewerName(): string | null {
-  return process.env.REVIEWER_NAME?.trim() || null;
+/** The official checker's name is fixed in the environment, not typed.
+ *  One per target language: REVIEWER_NAME (Chinese), REVIEWER_NAME_ES (Spanish). */
+export function officialReviewerName(lang: TargetLanguage = "zh-Hans"): string | null {
+  const v = lang === "es" ? process.env.REVIEWER_NAME_ES : process.env.REVIEWER_NAME;
+  return v?.trim() || null;
 }
 
-export function resolveReviewerName(level: ReviewerLevel, submitted: string): string {
-  if (level === "native") return officialReviewerName() ?? submitted;
+export function resolveReviewerName(
+  level: ReviewerLevel,
+  submitted: string,
+  lang: TargetLanguage = "zh-Hans",
+): string {
+  if (level === "native") return officialReviewerName(lang) ?? submitted;
   return submitted;
 }

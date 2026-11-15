@@ -63,3 +63,8 @@ is now optional. Community reviewers use code `friends-2026`; their approvals sh
 
 Reminder: `npm run build` then `npm start` again before the demo, since the code changed
 after the rehearsal.
+
+## Spanish (added)
+Switch "I'm learning" to Spanish at the top. Juan is the official Spanish checker with the
+same reviewer code; approvals of Spanish lines carry his name. The pre-warm list is
+Chinese only; run one Spanish composition before the demo if you plan to show it.

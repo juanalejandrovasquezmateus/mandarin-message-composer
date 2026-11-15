@@ -171,3 +171,22 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
 - Rehearsal done on laptop + phone over local Wi-Fi; production build passes.
 - Test data policy: lines approved during Claude's tests were removed from the bank so
   no badge carries a reviewer's name without that reviewer having approved it.
+
+## Phase 4C additions (2026-11-15): Shanghai look, second language
+- Visual: Shanghai palette (river-mist paper, Huangpu-night nav band with a Lujiazui
+  skyline, Bund red actions, Pudong gold highlights). `SiteNav` on every page with Home,
+  Reviewer desk and the streak. System fonts only.
+- Streak = Shanghai Tower (`StreakPill`): tiers Unlit (0), Dawn (1+), Amber (3+),
+  Bund red (7+), Neon (14+), Gold crown (30+). Clicking the pill previews all tiers.
+- Second language: "I'm learning: Chinese | Spanish" at the top. `targetLanguage` flows
+  through compose, verify, review request/decide and the banks (`verified-phrases.json`
+  for Chinese, `verified-phrases-es.json` for Spanish; both use the `chinese` field for
+  the target-language line, a historical name). Pinyin only for Chinese. Prompts are
+  parameterised per language. Official checker names: `REVIEWER_NAME` (Chinese),
+  `REVIEWER_NAME_ES` (Spanish); same reviewer code.
+- Intent may be written in English or Spanish. "Give me a common situation" fills the
+  form from `src/lib/practice.ts` (no AI call). Demo Mode still has Chinese examples only.
+- Bank matcher now needs the same relationship AND 3 keyword hits; the verbatim restore
+  of an approved line only happens when the model's adapted line resembles it (>= 0.6
+  overlap). This fixed a false match seen in testing (a "ride to school" line surfacing
+  for a dinner invitation).

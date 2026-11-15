@@ -16,7 +16,6 @@
     "tone": "appreciative",
     "context": "After borrowing class notes",
     "region": "colombia",
-    "text": "¡Muchas gracias por prestarme tus apuntes! Me salvaron para el examen.",
     "english": "Thank you so much for lending me your notes! They really saved me for the exam.",
     "nuance": "",
     "verification": {
@@ -25,7 +24,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Muchas gracias por prestarme tus apuntes! Me salvaron para el examen.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO002",
@@ -45,7 +46,6 @@
     "tone": "friendly",
     "context": "Before meeting for a group project",
     "region": "colombia",
-    "text": "Perdón por llegar tarde, ya voy en camino. Gracias por esperarme.",
     "english": "Sorry I'm running late, I'm on my way. Thanks for waiting for me.",
     "nuance": "",
     "verification": {
@@ -54,7 +54,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Perdón por llegar tarde, ya voy en camino. Gracias por esperarme.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO003",
@@ -74,7 +76,6 @@
     "tone": "casual",
     "context": "Planning something for the weekend",
     "region": "colombia",
-    "text": "¿Quieres salir este sábado? Podríamos ir a comer algo y pasar el rato.",
     "english": "Do you want to hang out this Saturday? We could go get something to eat and spend some time together.",
     "nuance": "",
     "verification": {
@@ -83,7 +84,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¿Quieres salir este sábado? Podríamos ir a comer algo y pasar el rato.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO004",
@@ -103,7 +106,6 @@
     "tone": "friendly",
     "context": "Missing a lesson at school",
     "region": "colombia",
-    "text": "¿Me puedes hacer un favor? ¿Me mandas lo que vimos hoy en clase?",
     "english": "Could you do me a favour? Could you send me what we covered in class today?",
     "nuance": "",
     "verification": {
@@ -112,7 +114,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¿Me puedes hacer un favor? ¿Me mandas lo que vimos hoy en clase?",
+    "pinyin": ""
   },
   {
     "id": "rev-CO005",
@@ -136,7 +140,6 @@
     "tone": "friendly",
     "context": "Unable to attend a birthday gathering",
     "region": "colombia",
-    "text": "¡Gracias por invitarme! Me encantaría ir, pero esta vez no puedo. Espero que la pasen muy bien.",
     "english": "Thanks for inviting me! I'd love to go, but I can't make it this time. I hope you all have a great time.",
     "nuance": "",
     "verification": {
@@ -145,7 +148,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Gracias por invitarme! Me encantaría ir, pero esta vez no puedo. Espero que la pasen muy bien.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO006",
@@ -165,7 +170,6 @@
     "tone": "friendly",
     "context": "After receiving a good grade",
     "region": "colombia",
-    "text": "¡Felicitaciones por esa nota! Te lo mereces, sé cuánto estudiaste.",
     "english": "Congratulations on that grade! You deserve it; I know how much you studied.",
     "nuance": "",
     "verification": {
@@ -174,7 +178,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Felicitaciones por esa nota! Te lo mereces, sé cuánto estudiaste.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO007",
@@ -194,7 +200,6 @@
     "tone": "appreciative",
     "context": "Host family member feeling unwell",
     "region": "colombia",
-    "text": "Hola, ¿cómo sigues? Espero que te sientas mejor pronto. Avísame si necesitas algo.",
     "english": "Hi, how are you feeling? I hope you feel better soon. Let me know if you need anything.",
     "nuance": "",
     "verification": {
@@ -203,7 +208,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Hola, ¿cómo sigues? Espero que te sientas mejor pronto. Avísame si necesitas algo.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO008",
@@ -223,7 +230,6 @@
     "tone": "casual",
     "context": "Meeting up after school",
     "region": "colombia",
-    "text": "¡Hola! Solo quería confirmar si seguimos con el plan de mañana. ¿Nos vemos a las 5?",
     "english": "Hey! I just wanted to confirm if we're still on for tomorrow. Are we meeting at 5?",
     "nuance": "",
     "verification": {
@@ -232,7 +238,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Hola! Solo quería confirmar si seguimos con el plan de mañana. ¿Nos vemos a las 5?",
+    "pinyin": ""
   },
   {
     "id": "rev-CO009",
@@ -254,7 +262,6 @@
     "tone": "polite",
     "context": "Unable to attend a study session",
     "region": "colombia",
-    "text": "Hola, qué pena, pero hoy no voy a poder reunirme. ¿Podemos dejarlo para otro día?",
     "english": "Hi, I'm sorry, but I won't be able to meet today. Could we reschedule for another day?",
     "nuance": "",
     "verification": {
@@ -263,7 +270,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Hola, qué pena, pero hoy no voy a poder reunirme. ¿Podemos dejarlo para otro día?",
+    "pinyin": ""
   },
   {
     "id": "rev-CO010",
@@ -287,7 +296,6 @@
     "tone": "friendly",
     "context": "Birthday message",
     "region": "colombia",
-    "text": "¡Feliz cumpleaños! Espero que tengas un día increíble y que este nuevo año te traiga muchas cosas buenas.",
     "english": "Happy birthday! I hope you have an amazing day and that this new year brings you lots of good things.",
     "nuance": "",
     "verification": {
@@ -296,7 +304,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Feliz cumpleaños! Espero que tengas un día increíble y que este nuevo año te traiga muchas cosas buenas.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO011",
@@ -319,7 +329,6 @@
     "tone": "appreciative",
     "context": "After receiving assignment feedback",
     "region": "colombia",
-    "text": "Muchas gracias por sus comentarios. Me van a servir mucho para mejorar mi próximo trabajo.",
     "english": "Thank you very much for your feedback. It will really help me improve my next assignment.",
     "nuance": "",
     "verification": {
@@ -328,7 +337,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Muchas gracias por sus comentarios. Me van a servir mucho para mejorar mi próximo trabajo.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO012",
@@ -354,7 +365,6 @@
     "tone": "polite",
     "context": "Requesting a ride to school",
     "region": "colombia",
-    "text": "Disculpa, ¿sería posible que me llevaras al colegio mañana? Si no puedes, no hay problema.",
     "english": "Excuse me, would it be possible for you to give me a ride to school tomorrow? No problem if you can't.",
     "nuance": "",
     "verification": {
@@ -363,7 +373,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Disculpa, ¿sería posible que me llevaras al colegio mañana? Si no puedes, no hay problema.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO013",
@@ -387,7 +399,6 @@
     "tone": "appreciative",
     "context": "Forgetting to do a household chore",
     "region": "colombia",
-    "text": "Perdón, se me olvidó sacar la basura. Ya mismo lo hago, no vuelve a pasar.",
     "english": "Sorry, I forgot to take out the trash. I'll do it right now; it won't happen again.",
     "nuance": "",
     "verification": {
@@ -396,7 +407,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "Perdón, se me olvidó sacar la basura. Ya mismo lo hago, no vuelve a pasar.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO014",
@@ -417,7 +430,6 @@
     "tone": "friendly",
     "context": "Preparing for an upcoming test",
     "region": "colombia",
-    "text": "¿Te gustaría estudiar juntos mañana después de clase? Así podemos repasar para el examen.",
     "english": "Would you like to study together tomorrow after class? That way we can review for the exam.",
     "nuance": "",
     "verification": {
@@ -426,7 +438,9 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¿Te gustaría estudiar juntos mañana después de clase? Así podemos repasar para el examen.",
+    "pinyin": ""
   },
   {
     "id": "rev-CO015",
@@ -448,7 +462,6 @@
     "tone": "appreciative",
     "context": "Celebrating a graduation",
     "region": "colombia",
-    "text": "¡Felicitaciones por tu graduación! Estoy muy orgulloso de ti. Te deseo lo mejor en esta nueva etapa.",
     "english": "Congratulations on your graduation! I'm very proud of you. I wish you all the best in this new chapter.",
     "nuance": "",
     "verification": {
@@ -457,6 +470,8 @@
       "verifiedBy": "Juan Vasquez",
       "note": "",
       "date": "2026-11-15"
-    }
+    },
+    "chinese": "¡Felicitaciones por tu graduación! Estoy muy orgulloso de ti. Te deseo lo mejor en esta nueva etapa.",
+    "pinyin": ""
   }
 ]

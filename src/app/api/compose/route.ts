@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findVerifiedMatch, normalizeZh, provenanceFor } from "@/lib/phrase-bank";
+import { findVerifiedMatch, normalizeZh, provenanceFor, similarity } from "@/lib/phrase-bank";
 import { composeRequestSchema } from "@/lib/schemas";
 import { generateCandidates, hasProvider, providerErrorReason } from "@/lib/server/ai";
 import { allowRequest, cacheGet, cacheSet, clientIp } from "@/lib/server/limits";
@@ -18,9 +18,11 @@ export async function POST(req: Request) {
   }
   const request = parsed.data;
 
+  const lang = request.targetLanguage;
   const key =
     "compose:" +
     JSON.stringify([
+      lang,
       request.intent.toLowerCase(),
       request.relationship,
       request.tone,
@@ -41,7 +43,11 @@ export async function POST(req: Request) {
     let raw = model.candidates.slice(0, 3);
     if (verified) {
       const verbatim = raw.some((c) => normalizeZh(c.chinese) === normalizeZh(verified.chinese));
-      const used = raw.some((c) => c.adaptedFromVerified);
+      // Only restore when the model really built on the approved line: it must
+      // have flagged the adaptation AND the result must still resemble it.
+      const used = raw.some(
+        (c) => c.adaptedFromVerified && similarity(c.chinese, verified.chinese) >= 0.6,
+      );
       if (!verbatim && used) {
         // The model judged the approved line relevant but paraphrased it. The point
         // of the bank is to show the approved wording, so restore it verbatim as
@@ -67,7 +73,7 @@ export async function POST(req: Request) {
         label: c.label,
         chinese: c.chinese.trim(),
         // Pinyin comes from the library, not the model (tone marks are reliable).
-        pinyin: toPinyin(c.chinese.trim()),
+        pinyin: lang === "zh-Hans" ? toPinyin(c.chinese.trim()) : "",
         english: c.english.trim(),
         nuance: c.nuance.trim(),
         vocab: c.vocab.slice(0, 4),
@@ -85,7 +91,7 @@ export async function POST(req: Request) {
       id: crypto.randomUUID(),
       ...request,
       sourceLanguage: "en",
-      targetLanguage: "zh-Hans",
+      targetLanguage: lang,
       candidates,
     };
     cacheSet(key, result);

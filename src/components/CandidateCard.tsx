@@ -1,6 +1,6 @@
 "use client";
 
-import { CANDIDATE_LABELS, type Candidate } from "@/lib/types";
+import { CANDIDATE_LABELS, type Candidate, type TargetLanguage } from "@/lib/types";
 import { ProvenanceBadge } from "./ProvenanceBadge";
 
 export type ReviewRequestState =
@@ -22,6 +22,7 @@ export interface ReviewInfo {
 
 interface Props {
   candidate: Candidate;
+  lang: TargetLanguage;
   selected: boolean;
   inDraft: boolean;
   onSelect: () => void;
@@ -45,6 +46,7 @@ const SETTLED: ReviewRequestState[] = ["sending", "sent", "verified", "approved"
 
 export function CandidateCard({
   candidate,
+  lang,
   selected,
   inDraft,
   onSelect,
@@ -58,6 +60,7 @@ export function CandidateCard({
     candidate.provenance === "user-submitted";
   const canRequest = review && (unverified || review.state !== "idle");
   const good = review && ["sent", "verified", "approved", "changed"].includes(review.state);
+  const zh = lang === "zh-Hans";
   return (
     <article
       className={`rounded-2xl border bg-card p-4 shadow-sm transition-colors sm:p-5 ${
@@ -77,14 +80,16 @@ export function CandidateCard({
       </header>
 
       <p
-        lang="zh-Hans"
-        className="mt-3 text-2xl leading-snug text-ink sm:text-[1.75rem]"
+        lang={zh ? "zh-Hans" : "es"}
+        className={`mt-3 leading-snug text-ink ${zh ? "text-2xl sm:text-[1.75rem]" : "text-xl sm:text-2xl"}`}
       >
         {candidate.chinese}
       </p>
-      <p className="mt-1.5 text-sm text-muted">{candidate.pinyin}</p>
+      {zh && candidate.pinyin && (
+        <p className="mt-1.5 text-sm text-muted">{candidate.pinyin}</p>
+      )}
       <p className="mt-3 text-base text-ink">{candidate.english}</p>
-      <p className="mt-2 border-l-2 border-line pl-3 text-sm leading-relaxed text-muted">
+      <p className="mt-2 border-l-2 border-gold/60 pl-3 text-sm leading-relaxed text-muted">
         {candidate.nuance}
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -97,7 +102,7 @@ export function CandidateCard({
             type="button"
             onClick={review.onRequest}
             disabled={SETTLED.includes(review.state)}
-            title="Sends this line and your English intent to a native-speaking reviewer."
+            title="Sends this line and your intent to a native-speaking reviewer."
             className={`text-xs underline-offset-2 ${
               good
                 ? "text-ok"
@@ -135,7 +140,7 @@ export function CandidateCard({
           type="button"
           onClick={onAdd}
           disabled={inDraft}
-          className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-paper transition-colors hover:bg-black disabled:cursor-default disabled:bg-ok-soft disabled:text-ok"
+          className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-paper transition-colors hover:bg-night disabled:cursor-default disabled:bg-ok-soft disabled:text-ok"
         >
           {inDraft ? "In your draft" : "Add to draft"}
         </button>

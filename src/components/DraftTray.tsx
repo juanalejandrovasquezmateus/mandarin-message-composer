@@ -2,6 +2,7 @@
 
 interface Props {
   lines: string[];
+  lang: "zh-Hans" | "es";
   copied: boolean;
   onRemove: (index: number) => void;
   onClear: () => void;
@@ -9,10 +10,11 @@ interface Props {
 }
 
 export function joinDraft(lines: string[]) {
-  return lines.join("");
+  return lines.join(lines.some((l) => /\p{Script=Latin}/u.test(l)) ? " " : "");
 }
 
-export function DraftTray({ lines, copied, onRemove, onClear, onCopy }: Props) {
+export function DraftTray({ lines, lang, copied, onRemove, onClear, onCopy }: Props) {
+  const l = lang === "es" ? "es" : "zh-Hans";
   const text = joinDraft(lines);
   return (
     <section
@@ -46,7 +48,7 @@ export function DraftTray({ lines, copied, onRemove, onClear, onCopy }: Props) {
                 key={`${i}-${line}`}
                 className="flex items-start justify-between gap-3 rounded-lg bg-paper px-3 py-2"
               >
-                <span lang="zh-Hans" className="text-base text-ink">
+                <span lang={l} className="text-base text-ink">
                   {line}
                 </span>
                 <button
@@ -61,7 +63,7 @@ export function DraftTray({ lines, copied, onRemove, onClear, onCopy }: Props) {
             ))}
           </ul>
           <p
-            lang="zh-Hans"
+            lang={l}
             className="mt-4 rounded-xl border border-line px-4 py-3 text-lg leading-relaxed text-ink"
           >
             {text}

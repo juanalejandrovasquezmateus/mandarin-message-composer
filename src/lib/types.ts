@@ -24,7 +24,16 @@ export const CONTEXT_MAX_CHARS = 120;
 /** Language pair. Only en -> zh-Hans is built today; the fields exist so a
  *  second direction is configuration later, not a rewrite. */
 export type LanguageCode = "en" | "zh-Hans" | "es";
+export type TargetLanguage = "zh-Hans" | "es";
 export type Region = "mainland" | "taiwan" | "other";
+
+export const TARGET_LANGUAGES: Record<
+  TargetLanguage,
+  { name: string; adjective: string; hasPinyin: boolean; checkerLabel: string }
+> = {
+  "zh-Hans": { name: "Chinese", adjective: "Chinese", hasPinyin: true, checkerLabel: "native Chinese speaker" },
+  es: { name: "Spanish", adjective: "Spanish", hasPinyin: false, checkerLabel: "native Spanish speaker" },
+};
 
 export type CandidateLabel = "direct" | "natural" | "fitted" | "own";
 
@@ -100,12 +109,14 @@ export interface ComposeRequest {
   tone: Tone;
   /** Optional free text, e.g. "she's my host mom, speaks no English". */
   context?: string;
+  /** Language the message should be in. Defaults to Chinese. */
+  targetLanguage?: TargetLanguage;
 }
 
 export interface ComposeResult extends ComposeRequest {
   id: string;
   sourceLanguage: LanguageCode;
-  targetLanguage: LanguageCode;
+  targetLanguage: TargetLanguage;
   candidates: Candidate[];
 }
 
@@ -119,6 +130,7 @@ export interface VerifyRequest {
   intent: string;
   relationship: Relationship;
   tone: Tone;
+  targetLanguage?: TargetLanguage;
 }
 
 /** One entry in the phrase bank (src/data/verified-phrases.json). */
@@ -158,6 +170,7 @@ export interface ReviewRequestItem {
   region: Region;
   provenance: Provenance;
   submittedAt: string;
+  targetLanguage?: TargetLanguage;
 }
 
 export type ReviewDecision = "keep" | "fix" | "reject";

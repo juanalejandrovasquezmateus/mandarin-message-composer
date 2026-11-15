@@ -1,6 +1,6 @@
 "use client";
 
-import type { Candidate, Register, VerifyResult } from "@/lib/types";
+import type { Candidate, Register, TargetLanguage, VerifyResult } from "@/lib/types";
 
 export type VerifyState =
   | { status: "loading" }
@@ -9,6 +9,7 @@ export type VerifyState =
 
 interface Props {
   candidate: Candidate;
+  lang: TargetLanguage;
   intent: string;
   state: VerifyState;
   onRetry: () => void;
@@ -16,7 +17,7 @@ interface Props {
 
 const REGISTERS: Register[] = ["casual", "neutral", "polite", "formal"];
 
-export function MeaningCheck({ candidate, intent, state, onRetry }: Props) {
+export function MeaningCheck({ candidate, lang, intent, state, onRetry }: Props) {
   return (
     <section
       aria-label="Meaning check"
@@ -26,7 +27,7 @@ export function MeaningCheck({ candidate, intent, state, onRetry }: Props) {
       <h3 className="text-xs font-medium uppercase tracking-wide text-muted">
         Meaning check
       </h3>
-      <p lang="zh-Hans" className="mt-2 text-lg text-ink">
+      <p lang={lang === "es" ? "es" : "zh-Hans"} className="mt-2 text-lg text-ink">
         {candidate.chinese}
       </p>
 
@@ -58,7 +59,7 @@ export function MeaningCheck({ candidate, intent, state, onRetry }: Props) {
       )}
 
       <p className="mt-4 rounded-lg bg-paper px-3 py-2 text-xs leading-relaxed text-muted">
-        The literal reading is produced without seeing your English, so it can
+        The literal reading is produced without seeing your intent, so it can
         catch mismatches. It doesn&rsquo;t prove the line is perfect. A native
         speaker is the final judge.
       </p>
@@ -73,10 +74,10 @@ export function MeaningCheck({ candidate, intent, state, onRetry }: Props) {
           <ul className="mt-2 divide-y divide-line">
             {candidate.vocab.map((v) => (
               <li key={v.word} className="flex items-baseline gap-3 py-2 text-sm">
-                <span lang="zh-Hans" className="min-w-16 text-base text-ink">
+                <span lang={lang === "es" ? "es" : "zh-Hans"} className="min-w-16 text-base text-ink">
                   {v.word}
                 </span>
-                <span className="min-w-20 text-muted">{v.pinyin}</span>
+                {v.pinyin && <span className="min-w-20 text-muted">{v.pinyin}</span>}
                 <span className="text-ink">{v.meaning}</span>
               </li>
             ))}

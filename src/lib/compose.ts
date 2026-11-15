@@ -64,7 +64,8 @@ async function demoFallback(req: ComposeRequest, reason: string): Promise<Compos
   const why = REASONS[reason] ?? REASONS.unknown;
   const note =
     `Live AI is unavailable (${why}). Showing a prepared Demo Mode example` +
-    (matched ? "." : ": the closest one to your words, not a response to them.");
+    (matched ? "." : ": the closest one to your words, not a response to them.") +
+    (req.targetLanguage === "es" ? " Demo Mode has Chinese examples only." : "");
   return { result, source: "demo", note };
 }
 
@@ -92,6 +93,7 @@ export async function requestHumanCheck(
       relationship: req.relationship,
       tone: req.tone,
       context: req.context,
+      targetLanguage: req.targetLanguage ?? "zh-Hans",
       source,
     }),
   });

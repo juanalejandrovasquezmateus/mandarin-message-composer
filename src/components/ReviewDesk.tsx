@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import {
   RELATIONSHIPS,
@@ -29,6 +28,7 @@ type Queue =
       items: ReviewRequestItem[];
       verifiedCount: number;
       officialName: string | null;
+      officialNameEs: string | null;
     };
 
 export function ReviewDesk() {
@@ -57,6 +57,7 @@ export function ReviewDesk() {
         items: ReviewRequestItem[];
         verifiedCount: number;
         officialName: string | null;
+        officialNameEs: string | null;
       };
       setQueue({ status: "ready", ...data });
     } catch {
@@ -83,10 +84,7 @@ export function ReviewDesk() {
   return (
     <div className="space-y-8">
       <header>
-        <Link href="/" className="text-xs text-muted underline-offset-2 hover:underline">
-          ← Back to the composer
-        </Link>
-        <h1 className="mt-3 text-xl font-semibold tracking-tight text-ink">Reviewer desk</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">Reviewer desk</h1>
         <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted">
           Lines that users asked a human to check. Keep it if a native speaker would
           text it, fix it if it needs a better wording, reject it if it shouldn&rsquo;t be
@@ -131,7 +129,11 @@ export function ReviewDesk() {
         {queue.status === "ready" && (
           <p className="mt-3 text-xs text-muted">
             Approving as{" "}
-            <span className="font-medium text-ink">{queue.officialName ?? name.trim()}</span>{" "}
+            <span className="font-medium text-ink">
+              {queue.level === "native"
+                ? [queue.officialName && queue.officialName + " (Chinese)", queue.officialNameEs && queue.officialNameEs + " (Spanish)"].filter(Boolean).join(", ") || name.trim()
+                : name.trim()}
+            </span>{" "}
             ({queue.level === "native" ? "official native checker" : "community reviewer"}).
             Bank: {queue.verifiedCount} verified lines. Waiting: {queue.items.length}.
           </p>
@@ -189,6 +191,7 @@ function ReviewItem({
   const confirmed = natural && meaning;
 
   const relLabel = RELATIONSHIPS.find((r) => r.id === item.relationship)?.label ?? item.relationship;
+  const itemLang = item.targetLanguage === "es" ? "es" : "zh-Hans";
   const badgeText = level === "native" ? "checked by a native speaker" : "checked by a community member";
 
   async function decide(decision: ReviewDecision) {
@@ -241,11 +244,12 @@ function ReviewItem({
         <ProvenanceBadge provenance={item.provenance} />
         <span className="rounded-full border border-line px-2 py-0.5">{relLabel}</span>
         <span className="rounded-full border border-line px-2 py-0.5">{item.tone}</span>
+        <span className="rounded-full border border-gold/60 bg-gold-soft px-2 py-0.5 text-warn">{itemLang === "es" ? "Spanish" : "Chinese"}</span>
         {item.context && <span className="italic">“{item.context}”</span>}
       </div>
       <p className="mt-3 text-xs italic text-muted">User meant: “{item.intent}”</p>
-      <p lang="zh-Hans" className="mt-2 text-2xl leading-snug text-ink">{item.chinese}</p>
-      <p className="mt-1 text-sm text-muted">{item.pinyin}</p>
+      <p lang={itemLang} className="mt-2 text-2xl leading-snug text-ink">{item.chinese}</p>
+      {item.pinyin && <p className="mt-1 text-sm text-muted">{item.pinyin}</p>}
       <p className="mt-2 text-sm text-ink">{item.english}</p>
 
       {fixing && (
@@ -253,7 +257,7 @@ function ReviewItem({
           <label className="block text-sm">
             <span className="text-xs font-medium uppercase tracking-wide text-muted">Better wording</span>
             <textarea
-              lang="zh-Hans"
+              lang={itemLang}
               value={fixed}
               onChange={(e) => setFixed(e.target.value)}
               rows={2}

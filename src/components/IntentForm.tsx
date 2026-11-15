@@ -4,29 +4,41 @@ import {
   CONTEXT_MAX_CHARS,
   INTENT_MAX_CHARS,
   RELATIONSHIPS,
+  TARGET_LANGUAGES,
   TONES,
   type Relationship,
+  type TargetLanguage,
   type Tone,
 } from "@/lib/types";
+
+export interface Example {
+  intent: string;
+  relationship: Relationship;
+  tone: Tone;
+}
 
 interface Props {
   intent: string;
   relationship: Relationship;
   tone: Tone;
   context: string;
+  lang: TargetLanguage;
   loading: boolean;
-  examples: { intent: string; relationship: Relationship; tone: Tone }[];
+  examples: Example[];
   onIntentChange: (v: string) => void;
   onRelationshipChange: (v: Relationship) => void;
   onToneChange: (v: Tone) => void;
   onContextChange: (v: string) => void;
-  onPickExample: (ex: { intent: string; relationship: Relationship; tone: Tone }) => void;
+  onLangChange: (v: TargetLanguage) => void;
+  onPickExample: (ex: Example) => void;
+  onSurprise: () => void;
   onSubmit: () => void;
 }
 
 export function IntentForm(p: Props) {
   const remaining = INTENT_MAX_CHARS - p.intent.length;
   const canSubmit = p.intent.trim().length >= 3 && !p.loading;
+  const L = TARGET_LANGUAGES[p.lang];
 
   return (
     <form
@@ -36,11 +48,43 @@ export function IntentForm(p: Props) {
         if (canSubmit) p.onSubmit();
       }}
     >
-      <label htmlFor="intent" className="block text-sm font-medium text-ink">
+      <fieldset className="flex flex-wrap items-center gap-3">
+        <legend className="sr-only">Language you are learning</legend>
+        <span className="text-xs font-medium uppercase tracking-wide text-muted">I&rsquo;m learning</span>
+        <div className="inline-flex rounded-full border border-line bg-paper p-0.5">
+          {(Object.keys(TARGET_LANGUAGES) as TargetLanguage[]).map((code) => {
+            const active = code === p.lang;
+            return (
+              <button
+                key={code}
+                type="button"
+                aria-pressed={active}
+                onClick={() => p.onLangChange(code)}
+                className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+                  active ? "bg-ink text-paper" : "text-muted hover:text-ink"
+                }`}
+              >
+                {code === "zh-Hans" ? (
+                  <>
+                    <span lang="zh-Hans">中文</span> Chinese
+                  </>
+                ) : (
+                  <>
+                    <span lang="es">Español</span> Spanish
+                  </>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <label htmlFor="intent" className="mt-5 block text-sm font-medium text-ink">
         What do you want to say?
       </label>
       <p className="mt-1 text-sm text-muted">
-        Write it in English, the way you&rsquo;d explain it to a friend.
+        Write it in English or Spanish, the way you&rsquo;d explain it to a friend.
+        You&rsquo;ll get three ways to say it in {L.name}.
       </p>
       <textarea
         id="intent"
@@ -58,7 +102,15 @@ export function IntentForm(p: Props) {
         placeholder="e.g. Thank my friend for helping me with homework, without sounding too formal"
         className="mt-3 w-full resize-none rounded-xl border border-line bg-paper px-4 py-3 text-base leading-relaxed text-ink placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
       />
-      <div className="mt-1 flex justify-end">
+      <div className="mt-1 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={p.onSurprise}
+          className="text-xs text-muted underline-offset-2 hover:text-ink hover:underline"
+          title="Fills the box with a common everyday situation to practise."
+        >
+          Give me a common situation
+        </button>
         <span
           className={`text-xs ${remaining < 30 ? "text-accent" : "text-muted"}`}
         >

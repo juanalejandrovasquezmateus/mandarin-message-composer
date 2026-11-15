@@ -1259,5 +1259,90 @@
       "note": "its sounds energetic and friendly to peers",
       "date": "2026-11-15"
     }
+  },
+  {
+    "id": "q-d43c00bd",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Tell my host family's mom that dinner was delicious",
+    "keywords": [
+      "tell",
+      "host",
+      "family'",
+      "dinner",
+      "deliciou",
+      "auntie"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "",
+    "region": "mainland",
+    "chinese": "阿姨，晚饭很好吃。",
+    "pinyin": "Ā yí, wǎn fàn hěn hǎo chī.",
+    "english": "Auntie, dinner was delicious.",
+    "nuance": "",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-ef9c5bed",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Tell my host family's mom that dinner was delicious",
+    "keywords": [
+      "tell",
+      "host",
+      "family'",
+      "dinner",
+      "deliciou"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "",
+    "region": "mainland",
+    "chinese": "阿姨，这份晚餐做的特别棒！",
+    "pinyin": "Ā yí, zhè fèn wǎn cān zuò de tè bié bàng!",
+    "english": "Tell my host family's mom that dinner was delicious",
+    "nuance": "supportive",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "supportive",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-01f791b0",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "i want to tell my mom i love her",
+    "keywords": [
+      "tell",
+      "love",
+      "suddenly",
+      "want",
+      "much"
+    ],
+    "relationship": "family",
+    "tone": "friendly",
+    "context": "mom only speaks chinese",
+    "region": "mainland",
+    "chinese": "妈妈,突然想跟你说一声:我好爱你呀!",
+    "pinyin": "Mā ma , tū rán xiǎng gēn nǐ shuō yì shēng : wǒ hǎo ài nǐ ya !",
+    "english": "Mom, I suddenly wanted to tell you: I love you so much!",
+    "nuance": "",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "",
+      "date": "2026-11-15"
+    }
   }
 ]

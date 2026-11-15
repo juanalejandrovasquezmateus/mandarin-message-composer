@@ -3,15 +3,13 @@
 // Server-only (reads the JSON file at request time so reviewer approvals
 // show up immediately).
 import { readBank } from "./server/bank-store";
-import type { ComposeRequest, Provenance, VerifiedPhrase } from "./types";
+import type { ComposeRequest, Provenance, TargetLanguage, VerifiedPhrase } from "./types";
 
 export type { VerifiedPhrase };
 
-export async function verifiedPhrases(): Promise<VerifiedPhrase[]> {
-  const bank = await readBank();
-  return bank.filter(
-    (p) => p.verification.status === "verified" && p.targetLanguage === "zh-Hans",
-  );
+export async function verifiedPhrases(lang: TargetLanguage = "zh-Hans"): Promise<VerifiedPhrase[]> {
+  const bank = await readBank(lang);
+  return bank.filter((p) => p.verification.status === "verified");
 }
 
 /**
@@ -26,10 +24,10 @@ export async function findVerifiedMatch(
   const text = req.intent.toLowerCase();
   let best: VerifiedPhrase | null = null;
   let bestScore = 0;
-  for (const p of await verifiedPhrases()) {
+  for (const p of await verifiedPhrases(req.targetLanguage ?? "zh-Hans")) {
     if (p.relationship !== req.relationship) continue;
     const hits = p.keywords.filter((k) => text.includes(k.toLowerCase())).length;
-    if (hits < 2) continue;
+    if (hits < 3) continue;
     const toneMatch = p.tone === req.tone;
     const score = hits * 2 + (toneMatch ? 1 : 0);
     if (score > bestScore) {
@@ -40,7 +38,22 @@ export async function findVerifiedMatch(
   return best;
 }
 
-export const normalizeZh = (s: string) => s.replace(/[\s，。！？、,.!?~～]/g, "");
+export const normalizeZh = (s: string) =>
+  s.toLowerCase().replace(/[\s，。！？、,.!?~～¿¡]/g, "");
+
+/** Rough overlap between two lines: characters for Chinese, words otherwise. 0..1 */
+export function similarity(a: string, b: string): number {
+  const toks = (s: string) => {
+    const n = normalizeZh(s);
+    return /\p{Script=Han}/u.test(n) ? [...n] : n.split(/\s+/).filter(Boolean);
+  };
+  const A = new Set(toks(a));
+  const B = new Set(toks(b));
+  if (A.size === 0 || B.size === 0) return 0;
+  let common = 0;
+  for (const t of A) if (B.has(t)) common++;
+  return (2 * common) / (A.size + B.size);
+}
 
 export function provenanceFor(
   chinese: string,

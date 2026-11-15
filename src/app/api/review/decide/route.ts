@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { keywordsFor } from "@/lib/keywords";
-import { reviewDecideSchema } from "@/lib/schemas";
+import { looksLikeLanguage, reviewDecideSchema } from "@/lib/schemas";
 import { hasProvider, providerErrorReason, screenEdit } from "@/lib/server/ai";
 import {
   appendToBank,
@@ -44,8 +44,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: "rejected" });
   }
 
+  const lang = item.targetLanguage ?? "zh-Hans";
   const chinese = d.decision === "fix" ? (d.chineseFixed?.trim() ?? "") : item.chinese;
-  if (!chinese) return NextResponse.json({ error: "bad_request" }, { status: 400 });
+  if (!chinese || !looksLikeLanguage(chinese, lang)) {
+    return NextResponse.json({ error: "bad_request" }, { status: 400 });
+  }
 
   if (!hasProvider()) {
     return NextResponse.json({ error: "no_provider" }, { status: 503 });
@@ -56,6 +59,7 @@ export async function POST(req: Request) {
       fixed: chinese,
       intent: item.intent,
       english: item.english,
+      targetLanguage: lang,
     });
     if (!verdict.ok) {
       return NextResponse.json(
@@ -72,7 +76,7 @@ export async function POST(req: Request) {
   const entry: VerifiedPhrase = {
     id: `q-${item.id.slice(0, 8)}`,
     sourceLanguage: "en",
-    targetLanguage: "zh-Hans",
+    targetLanguage: lang,
     intent: item.intent,
     keywords: keywordsFor(item.intent, item.english),
     relationship: item.relationship,
@@ -80,13 +84,13 @@ export async function POST(req: Request) {
     context: d.context ?? item.context ?? "",
     region: d.region ?? item.region,
     chinese,
-    pinyin: toPinyin(chinese),
+    pinyin: lang === "zh-Hans" ? toPinyin(chinese) : "",
     english: item.english,
     nuance: d.note ?? "",
     verification: {
       status: "verified",
       level,
-      verifiedBy: resolveReviewerName(level, d.reviewerName),
+      verifiedBy: resolveReviewerName(level, d.reviewerName, lang),
       note: d.note ?? "",
       date: new Date().toISOString().slice(0, 10),
     },

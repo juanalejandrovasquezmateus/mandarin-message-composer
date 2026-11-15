@@ -22,9 +22,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
   const { source, ...item } = parsed.data;
+  const lang = item.targetLanguage;
   const key = normalizeZh(item.chinese);
 
-  const existing = (await verifiedPhrases()).find((p) => normalizeZh(p.chinese) === key);
+  const existing = (await verifiedPhrases(lang)).find((p) => normalizeZh(p.chinese) === key);
   if (existing) {
     return NextResponse.json({
       status: "already_verified",
@@ -43,15 +44,16 @@ export async function POST(req: Request) {
   const entry: ReviewRequestItem = {
     id: crypto.randomUUID(),
     chinese: item.chinese,
-    pinyin: item.pinyin || toPinyin(item.chinese),
+    pinyin: lang === "zh-Hans" ? item.pinyin || toPinyin(item.chinese) : "",
     english: item.english || item.intent,
     intent: item.intent,
     relationship: item.relationship,
     tone: item.tone,
     context: item.context,
-    region: "mainland",
+    region: lang === "es" ? "other" : "mainland",
     provenance: source === "user" ? "user-submitted" : "ai-generated",
     submittedAt: new Date().toISOString(),
+    targetLanguage: lang,
   };
   queue.push(entry);
   await writeQueue(queue);

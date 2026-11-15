@@ -1,16 +1,21 @@
 @import "tailwindcss";
 
-/* Design tokens. Warm paper background, near-black ink, one cinnabar accent. */
+/* Design tokens. Shanghai palette: river-mist paper, Huangpu-night ink, Bund red,
+   Pudong gold. One accent for actions, gold for highlights only. */
 @theme {
-  --color-paper: #faf7f2;
+  --color-paper: #f5f3ee;
   --color-card: #ffffff;
-  --color-ink: #1c1a17;
-  --color-muted: #6f685e;
-  --color-line: #e7e1d6;
-  --color-line-strong: #cfc7b9;
-  --color-accent: #c23b22;
-  --color-accent-deep: #9e2d18;
-  --color-accent-soft: #fbeae5;
+  --color-ink: #161a22;
+  --color-night: #141a2a;
+  --color-night-soft: #1f2840;
+  --color-muted: #6b6f78;
+  --color-line: #e4e0d8;
+  --color-line-strong: #c9c3b7;
+  --color-accent: #c7372c;
+  --color-accent-deep: #9e2a21;
+  --color-accent-soft: #fbe9e6;
+  --color-gold: #c9973b;
+  --color-gold-soft: #f7efdc;
   --color-ok: #2f6b4f;
   --color-ok-soft: #e6f2ec;
   --color-info: #2b5f8a;

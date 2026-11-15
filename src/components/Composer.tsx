@@ -10,13 +10,17 @@ import {
 } from "@/lib/compose";
 import { DEMO_EXAMPLES } from "@/lib/demo-data";
 import { recordActivity } from "@/lib/streak";
-import type {
-  Candidate,
-  ComposeResult,
-  Relationship,
-  ResultSource,
-  ReviewStatus,
-  Tone,
+import { looksLikeLanguage } from "@/lib/schemas";
+import { PRACTICE_INTENTS } from "@/lib/practice";
+import {
+  TARGET_LANGUAGES,
+  type Candidate,
+  type ComposeResult,
+  type Relationship,
+  type ResultSource,
+  type ReviewStatus,
+  type TargetLanguage,
+  type Tone,
 } from "@/lib/types";
 import { IntentForm } from "./IntentForm";
 import {
@@ -26,7 +30,6 @@ import {
 } from "./CandidateCard";
 import { MeaningCheck, type VerifyState } from "./MeaningCheck";
 import { DraftTray, joinDraft } from "./DraftTray";
-import { StreakPill } from "./StreakPill";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
@@ -43,6 +46,7 @@ export function Composer() {
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [tone, setTone] = useState<Tone>("casual");
   const [context, setContext] = useState("");
+  const [lang, setLang] = useState<TargetLanguage>("zh-Hans");
 
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -152,6 +156,7 @@ export function Composer() {
         relationship,
         tone,
         context: context.trim() || undefined,
+        targetLanguage: lang,
       });
       if (id !== requestId.current) return; // a newer request superseded this one
       setResult(res.result);
@@ -179,6 +184,7 @@ export function Composer() {
         intent: current.intent,
         relationship: current.relationship,
         tone: current.tone,
+        targetLanguage: current.targetLanguage,
       });
       setChecks((c) => ({ ...c, [key]: { status: "ready", result: verdict } }));
     } catch (e) {
@@ -239,8 +245,8 @@ export function Composer() {
     if (!result) return;
     const text = ownInput.trim();
     setOwnError(null);
-    if (!/\p{Script=Han}/u.test(text)) {
-      setOwnError("Write the line in Chinese characters.");
+    if (!looksLikeLanguage(text, result.targetLanguage)) {
+      setOwnError("Write the line in " + TARGET_LANGUAGES[result.targetLanguage].name + ".");
       return;
     }
     if (own.some((c) => c.chinese === text) || result.candidates.some((c) => c.chinese === text)) {
@@ -286,6 +292,14 @@ export function Composer() {
   }
 
   const allCards = result ? [...result.candidates, ...own] : [];
+  const resultLang: TargetLanguage = result?.targetLanguage ?? lang;
+
+  function surprise() {
+    const pick = PRACTICE_INTENTS[Math.floor(Math.random() * PRACTICE_INTENTS.length)];
+    setIntent(pick.intent);
+    setRelationship(pick.relationship);
+    setTone(pick.tone);
+  }
   const selectedCandidate = allCards.find((c) => c.chinese === selected) ?? null;
   const checkedCount = allCards.filter((c) => c.provenance.startsWith("verified")).length;
 
@@ -301,30 +315,17 @@ export function Composer() {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-wrap items-start justify-between gap-4">
+      <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <span
-              lang="zh-Hans"
-              aria-hidden
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-lg font-medium text-white"
-            >
-              说
-            </span>
-            <h1 className="text-xl font-semibold tracking-tight text-ink">
-              Mandarin Message Composer
-            </h1>
-          </div>
-          <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
-            Say what you mean in natural Chinese, see how each version sounds,
-            and check what it really says before you send it. Every line shows
-            whether a real person has checked it.
+          <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+            Say what you mean. <span className="text-accent">Know how it sounds.</span>
+          </h1>
+          <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted">
+            Three natural ways to say it, a check of what it really says, and a label on
+            every line telling you whether a real person has approved it.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <StreakPill />
-          {source && <ModeBadge source={source} />}
-        </div>
+        {source && <ModeBadge source={source} />}
       </header>
 
       <IntentForm
@@ -332,6 +333,7 @@ export function Composer() {
         relationship={relationship}
         tone={tone}
         context={context}
+        lang={lang}
         loading={status === "loading"}
         examples={DEMO_EXAMPLES.map(({ intent, relationship, tone }) => ({
           intent,
@@ -342,6 +344,8 @@ export function Composer() {
         onRelationshipChange={setRelationship}
         onToneChange={setTone}
         onContextChange={setContext}
+        onLangChange={setLang}
+        onSurprise={surprise}
         onPickExample={(ex) => {
           setIntent(ex.intent);
           setRelationship(ex.relationship);
@@ -382,7 +386,7 @@ export function Composer() {
         {status === "ready" && result && (
           <>
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <SectionTitle>Three ways to say it</SectionTitle>
+              <SectionTitle>Three ways to say it in {TARGET_LANGUAGES[resultLang].name}</SectionTitle>
               <p className="text-xs text-muted" aria-live="polite">
                 {checkedCount === 0
                   ? "None of these lines has been checked by a person yet."
@@ -399,6 +403,7 @@ export function Composer() {
                 <CandidateCard
                   key={c.label}
                   candidate={c}
+                  lang={resultLang}
                   selected={selected === c.chinese}
                   inDraft={draft.includes(c.chinese)}
                   onSelect={() => select(c)}
@@ -410,6 +415,7 @@ export function Composer() {
                 <CandidateCard
                   key={`own-${c.chinese}`}
                   candidate={c}
+                  lang={resultLang}
                   selected={selected === c.chinese}
                   inDraft={draft.includes(c.chinese)}
                   onSelect={() => select(c)}
@@ -431,16 +437,16 @@ export function Composer() {
                   Know a better way to say it?
                 </label>
                 <p className="mt-1 text-xs text-muted">
-                  Write your own Chinese line. A reviewer checks it, and if it passes it
-                  joins the bank for everyone, with your wording.
+                  Write your own {TARGET_LANGUAGES[resultLang].name} line. A reviewer checks it,
+                  and if it passes it joins the bank for everyone, with your wording.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <input
                     id="own"
-                    lang="zh-Hans"
+                    lang={resultLang === "es" ? "es" : "zh-Hans"}
                     value={ownInput}
                     onChange={(e) => setOwnInput(e.target.value.slice(0, 200))}
-                    placeholder="例如：周六我想叫个朋友来家里吃饭，可以吗？"
+                    placeholder={resultLang === "es" ? "p. ej.: ¿Puedo invitar a un amigo a cenar el sábado?" : "例如：周六我想叫个朋友来家里吃饭，可以吗？"}
                     className="min-w-0 flex-1 rounded-xl border border-line bg-paper px-4 py-2.5 text-base text-ink placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                   />
                   <button
@@ -463,6 +469,7 @@ export function Composer() {
       {selectedCandidate && result && (
         <MeaningCheck
           candidate={selectedCandidate}
+          lang={resultLang}
           intent={result.intent}
           state={checks[selectedCandidate.chinese] ?? { status: "loading" }}
           onRetry={() => void runCheck(selectedCandidate, result)}
@@ -472,6 +479,7 @@ export function Composer() {
       {(status === "ready" || draft.length > 0) && (
         <DraftTray
           lines={draft}
+          lang={resultLang}
           copied={copied}
           onRemove={(i) => setDraft(draft.filter((_, j) => j !== i))}
           onClear={() => setDraft([])}

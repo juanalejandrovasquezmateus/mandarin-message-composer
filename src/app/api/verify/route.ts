@@ -19,6 +19,7 @@ export async function POST(req: Request) {
   const key =
     "verify:" +
     JSON.stringify([
+      request.targetLanguage,
       request.chinese,
       request.intent.toLowerCase(),
       request.relationship,
