@@ -36,8 +36,10 @@ const chineseLine = z
 
 export const reviewRequestSchema = z.object({
   chinese: chineseLine,
-  pinyin: z.string().trim().max(400),
-  english: z.string().trim().max(300),
+  pinyin: z.string().trim().max(400).optional(),
+  english: z.string().trim().max(300).optional(),
+  /** "user" when the person typed their own wording. */
+  source: z.enum(["ai", "user"]).optional(),
   intent: z.string().trim().min(3).max(INTENT_MAX_CHARS),
   relationship: relationshipSchema,
   tone: toneSchema,

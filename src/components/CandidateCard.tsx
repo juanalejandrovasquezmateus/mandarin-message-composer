@@ -3,7 +3,22 @@
 import { CANDIDATE_LABELS, type Candidate } from "@/lib/types";
 import { ProvenanceBadge } from "./ProvenanceBadge";
 
-export type ReviewRequestState = "idle" | "sending" | "sent" | "verified" | "error";
+export type ReviewRequestState =
+  | "idle"
+  | "sending"
+  | "sent"
+  | "verified"
+  | "approved"
+  | "changed"
+  | "rejected"
+  | "error";
+
+export interface ReviewInfo {
+  state: ReviewRequestState;
+  /** Extra line shown under the badge, e.g. who approved it. */
+  detail?: string;
+  onRequest: () => void;
+}
 
 interface Props {
   candidate: Candidate;
@@ -12,16 +27,21 @@ interface Props {
   onSelect: () => void;
   onAdd: () => void;
   /** Present only when a human check can be requested (live results). */
-  review?: { state: ReviewRequestState; onRequest: () => void };
+  review?: ReviewInfo;
 }
 
 const REVIEW_LABEL: Record<ReviewRequestState, string> = {
   idle: "Request a human check",
   sending: "Sending…",
-  sent: "Sent to a reviewer",
+  sent: "Waiting for a reviewer…",
   verified: "Already checked",
+  approved: "Approved by the reviewer",
+  changed: "Approved with a change",
+  rejected: "Rejected by the reviewer",
   error: "Couldn't send. Tap to retry",
 };
+
+const SETTLED: ReviewRequestState[] = ["sending", "sent", "verified", "approved", "changed", "rejected"];
 
 export function CandidateCard({
   candidate,
@@ -32,8 +52,12 @@ export function CandidateCard({
   review,
 }: Props) {
   const meta = CANDIDATE_LABELS[candidate.label];
-  const canRequest =
-    review && (candidate.provenance === "ai-generated" || candidate.provenance === "ai-adapted");
+  const unverified =
+    candidate.provenance === "ai-generated" ||
+    candidate.provenance === "ai-adapted" ||
+    candidate.provenance === "user-submitted";
+  const canRequest = review && (unverified || review.state !== "idle");
+  const good = review && ["sent", "verified", "approved", "changed"].includes(review.state);
   return (
     <article
       className={`rounded-2xl border bg-card p-4 shadow-sm transition-colors sm:p-5 ${
@@ -72,21 +96,27 @@ export function CandidateCard({
           <button
             type="button"
             onClick={review.onRequest}
-            disabled={review.state === "sending" || review.state === "sent" || review.state === "verified"}
+            disabled={SETTLED.includes(review.state)}
             title="Sends this line and your English intent to a native-speaking reviewer."
             className={`text-xs underline-offset-2 ${
-              review.state === "sent" || review.state === "verified"
+              good
                 ? "text-ok"
-                : review.state === "error"
-                  ? "text-accent-deep underline"
+                : review.state === "rejected" || review.state === "error"
+                  ? "text-accent-deep"
                   : "text-muted hover:text-ink hover:underline"
-            } disabled:cursor-default`}
+            } ${review.state === "error" ? "underline" : ""} disabled:cursor-default`}
           >
-            {review.state === "sent" ? "✓ " : ""}
+            {review.state === "sent" && (
+              <span aria-hidden className="mr-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-ok align-middle" />
+            )}
+            {(review.state === "approved" || review.state === "changed") && "✓ "}
             {REVIEW_LABEL[review.state]}
           </button>
         )}
       </div>
+      {review?.detail && (
+        <p className="mt-2 text-xs leading-relaxed text-muted">{review.detail}</p>
+      )}
 
       <footer className="mt-4 flex flex-wrap gap-2">
         <button

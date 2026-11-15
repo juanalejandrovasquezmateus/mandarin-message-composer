@@ -26,7 +26,7 @@ export const CONTEXT_MAX_CHARS = 120;
 export type LanguageCode = "en" | "zh-Hans" | "es";
 export type Region = "mainland" | "taiwan" | "other";
 
-export type CandidateLabel = "direct" | "natural" | "fitted";
+export type CandidateLabel = "direct" | "natural" | "fitted" | "own";
 
 export const CANDIDATE_LABELS: Record<
   CandidateLabel,
@@ -35,6 +35,7 @@ export const CANDIDATE_LABELS: Record<
   direct: { title: "Direct", blurb: "Closest to your English" },
   natural: { title: "Natural", blurb: "How people actually text it" },
   fitted: { title: "Fitted to tone", blurb: "Shaped for who it's for" },
+  own: { title: "Your wording", blurb: "Written by you" },
 };
 
 /** Where a line came from. Shown on every candidate, always truthfully. */
@@ -42,7 +43,8 @@ export type Provenance =
   | "verified-native"
   | "verified-community"
   | "ai-adapted"
-  | "ai-generated";
+  | "ai-generated"
+  | "user-submitted";
 
 export const PROVENANCE_LABELS: Record<
   Provenance,
@@ -63,6 +65,10 @@ export const PROVENANCE_LABELS: Record<
   "ai-generated": {
     title: "AI-generated, not yet checked",
     detail: "No human has reviewed this line.",
+  },
+  "user-submitted": {
+    title: "Written by a user, not yet checked",
+    detail: "A user wrote this line themselves. No reviewer has approved it yet.",
   },
 };
 
@@ -156,6 +162,23 @@ export interface ReviewRequestItem {
 
 export type ReviewDecision = "keep" | "fix" | "reject";
 export type ReviewerLevel = "native" | "community";
+
+/** Outcome of a review request, polled live by the page that asked. */
+export type ReviewStatus =
+  | { id: string; status: "queued" }
+  | { id: string; status: "unknown" }
+  | { id: string; status: "rejected"; date: string }
+  | {
+      id: string;
+      status: "approved";
+      chinese: string;
+      pinyin: string;
+      changed: boolean;
+      level: ReviewerLevel;
+      verifiedBy: string;
+      note: string;
+      date: string;
+    };
 
 export interface VerifyResult {
   /** What the Chinese literally says, produced without seeing the English. */

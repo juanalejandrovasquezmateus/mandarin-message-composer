@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   composeMessage,
+  fetchReviewStatus,
   requestHumanCheck,
   UserFacingError,
   verifyLine,
@@ -14,6 +15,7 @@ import type {
   ComposeResult,
   Relationship,
   ResultSource,
+  ReviewStatus,
   Tone,
 } from "@/lib/types";
 import { IntentForm } from "./IntentForm";
@@ -28,6 +30,14 @@ import { StreakPill } from "./StreakPill";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
+interface ReviewTrack {
+  state: ReviewRequestState;
+  id?: string;
+  detail?: string;
+}
+
+const POLL_MS = 4000;
+
 export function Composer() {
   const [intent, setIntent] = useState("");
   const [relationship, setRelationship] = useState<Relationship>("friend");
@@ -39,9 +49,14 @@ export function Composer() {
   const [result, setResult] = useState<ComposeResult | null>(null);
   const [source, setSource] = useState<ResultSource | null>(null);
   const [note, setNote] = useState<string | undefined>();
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [checks, setChecks] = useState<Record<string, VerifyState>>({});
-  const [reviews, setReviews] = useState<Record<string, ReviewRequestState>>({});
+  const [reviews, setReviews] = useState<Record<string, ReviewTrack>>({});
+
+  // Lines the user wrote themselves; they go through the same review.
+  const [own, setOwn] = useState<Candidate[]>([]);
+  const [ownInput, setOwnInput] = useState("");
+  const [ownError, setOwnError] = useState<string | null>(null);
 
   const [draft, setDraft] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
@@ -51,6 +66,76 @@ export function Composer() {
 
   // The draft lives in memory only: nothing the user writes is stored anywhere.
 
+  // Live status: while any requested line is waiting, ask the server every few
+  // seconds and update the card in place when a reviewer decides.
+  const waitingIds = Object.values(reviews)
+    .filter((r) => r.state === "sent" && r.id)
+    .map((r) => r.id as string)
+    .sort()
+    .join(",");
+  useEffect(() => {
+    if (!waitingIds) return;
+    let cancelled = false;
+    const tick = async () => {
+      const statuses = await fetchReviewStatus(waitingIds.split(","));
+      if (cancelled) return;
+      for (const s of statuses) applyStatus(s);
+    };
+    const timer = setInterval(tick, POLL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+    // applyStatus only touches setState functions, which are stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [waitingIds]);
+
+  function applyStatus(s: ReviewStatus) {
+    if (s.status === "queued" || s.status === "unknown") return;
+    setReviews((prev) => {
+      const key = Object.keys(prev).find((k) => prev[k].id === s.id);
+      if (!key || prev[key].state !== "sent") return prev;
+      const next = { ...prev };
+      if (s.status === "rejected") {
+        next[key] = { ...prev[key], state: "rejected", detail: "The reviewer decided this line should not be used." };
+        return next;
+      }
+      const who = s.level === "native" ? `${s.verifiedBy} (official native checker)` : `${s.verifiedBy} (community member)`;
+      next[key] = {
+        ...prev[key],
+        state: s.changed ? "changed" : "approved",
+        detail: s.changed
+          ? `${who} changed it to the line shown now.${s.note ? ` Note: ${s.note}` : ""}`
+          : `Approved by ${who}.${s.note ? ` Note: ${s.note}` : ""}`,
+      };
+      if (s.changed) {
+        // The card now shows the reviewer's wording; keep the status under the new key.
+        next[s.chinese] = next[key];
+        delete next[key];
+      }
+      return next;
+    });
+    if (s.status === "approved") {
+      const upgrade = (c: Candidate): Candidate =>
+        c.chinese === keyFor(s) || c.chinese === s.chinese
+          ? {
+              ...c,
+              chinese: s.chinese,
+              pinyin: s.pinyin,
+              vocab: s.changed ? [] : c.vocab,
+              provenance: s.level === "native" ? "verified-native" : "verified-community",
+              verifierNote: s.note || undefined,
+            }
+          : c;
+      setResult((r) => (r ? { ...r, candidates: r.candidates.map(upgrade) } : r));
+      setOwn((o) => o.map(upgrade));
+    }
+  }
+  // The chinese text a status belongs to is the key whose track carries its id.
+  function keyFor(s: ReviewStatus): string | undefined {
+    return Object.keys(reviews).find((k) => reviews[k].id === s.id);
+  }
+
   async function submit() {
     const id = ++requestId.current;
     setStatus("loading");
@@ -58,6 +143,9 @@ export function Composer() {
     setNote(undefined);
     setChecks({});
     setReviews({});
+    setOwn([]);
+    setOwnInput("");
+    setOwnError(null);
     try {
       const res = await composeMessage({
         intent: intent.trim(),
@@ -104,31 +192,73 @@ export function Composer() {
     }
   }
 
-  function select(i: number) {
+  function select(candidate: Candidate) {
     if (!result) return;
-    if (selected === i) {
+    if (selected === candidate.chinese) {
       setSelected(null);
       return;
     }
-    setSelected(i);
-    const candidate = result.candidates[i];
+    setSelected(candidate.chinese);
     const existing = checks[candidate.chinese];
     if (!existing || existing.status === "error") void runCheck(candidate, result);
   }
 
-  async function requestReview(candidate: Candidate, current: ComposeResult) {
+  async function requestReview(
+    candidate: Candidate,
+    current: ComposeResult,
+    sourceKind: "ai" | "user" = "ai",
+  ) {
     const key = candidate.chinese;
-    setReviews((r) => ({ ...r, [key]: "sending" }));
+    setReviews((r) => ({ ...r, [key]: { state: "sending" } }));
     try {
-      const outcome = await requestHumanCheck(candidate, current);
+      const outcome = await requestHumanCheck(candidate, current, sourceKind);
+      if (outcome.status === "already_verified") {
+        setReviews((r) => ({
+          ...r,
+          [key]: {
+            state: "verified",
+            detail: `Already approved by ${outcome.verifiedBy ?? "a reviewer"}.`,
+          },
+        }));
+        return;
+      }
+      setReviews((r) => ({ ...r, [key]: { state: "sent", id: outcome.id } }));
+      if (outcome.status === "queued") recordActivity();
+    } catch (e) {
       setReviews((r) => ({
         ...r,
-        [key]: outcome === "already_verified" ? "verified" : "sent",
+        [key]: {
+          state: "error",
+          detail: e instanceof UserFacingError ? e.message : undefined,
+        },
       }));
-      if (outcome === "queued") recordActivity();
-    } catch {
-      setReviews((r) => ({ ...r, [key]: "error" }));
     }
+  }
+
+  async function submitOwn() {
+    if (!result) return;
+    const text = ownInput.trim();
+    setOwnError(null);
+    if (!/\p{Script=Han}/u.test(text)) {
+      setOwnError("Write the line in Chinese characters.");
+      return;
+    }
+    if (own.some((c) => c.chinese === text) || result.candidates.some((c) => c.chinese === text)) {
+      setOwnError("That line is already on this page.");
+      return;
+    }
+    const candidate: Candidate = {
+      label: "own",
+      chinese: text,
+      pinyin: "",
+      english: result.intent,
+      nuance: "Your own wording. Ask a reviewer to check it, and it can join the bank for everyone.",
+      vocab: [],
+      provenance: "user-submitted",
+    };
+    setOwn((o) => [...o, candidate]);
+    setOwnInput("");
+    await requestReview(candidate, result, "user");
   }
 
   function addToDraft(line: string) {
@@ -155,8 +285,19 @@ export function Composer() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const selectedCandidate =
-    result && selected !== null ? result.candidates[selected] : null;
+  const allCards = result ? [...result.candidates, ...own] : [];
+  const selectedCandidate = allCards.find((c) => c.chinese === selected) ?? null;
+  const checkedCount = allCards.filter((c) => c.provenance.startsWith("verified")).length;
+
+  function reviewFor(c: Candidate) {
+    if (source !== "live" || !result) return undefined;
+    const track = reviews[c.chinese];
+    return {
+      state: track?.state ?? "idle",
+      detail: track?.detail,
+      onRequest: () => void requestReview(c, result, c.label === "own" ? "user" : "ai"),
+    };
+  }
 
   return (
     <div className="space-y-8">
@@ -240,32 +381,81 @@ export function Composer() {
 
         {status === "ready" && result && (
           <>
-            <SectionTitle>Three ways to say it</SectionTitle>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <SectionTitle>Three ways to say it</SectionTitle>
+              <p className="text-xs text-muted" aria-live="polite">
+                {checkedCount === 0
+                  ? "None of these lines has been checked by a person yet."
+                  : `${checkedCount} of ${allCards.length} checked by a person`}
+              </p>
+            </div>
             {note && (
               <p className="rounded-lg border border-accent/30 bg-accent-soft px-3 py-2 text-sm text-accent-deep">
                 {note}
               </p>
             )}
             <div className="space-y-4">
-              {result.candidates.map((c, i) => (
+              {result.candidates.map((c) => (
                 <CandidateCard
                   key={c.label}
                   candidate={c}
-                  selected={selected === i}
+                  selected={selected === c.chinese}
                   inDraft={draft.includes(c.chinese)}
-                  onSelect={() => select(i)}
+                  onSelect={() => select(c)}
                   onAdd={() => addToDraft(c.chinese)}
-                  review={
-                    source === "live"
-                      ? {
-                          state: reviews[c.chinese] ?? "idle",
-                          onRequest: () => void requestReview(c, result),
-                        }
-                      : undefined
-                  }
+                  review={reviewFor(c)}
+                />
+              ))}
+              {own.map((c) => (
+                <CandidateCard
+                  key={`own-${c.chinese}`}
+                  candidate={c}
+                  selected={selected === c.chinese}
+                  inDraft={draft.includes(c.chinese)}
+                  onSelect={() => select(c)}
+                  onAdd={() => addToDraft(c.chinese)}
+                  review={reviewFor(c)}
                 />
               ))}
             </div>
+
+            {source === "live" && (
+              <form
+                className="rounded-2xl border border-dashed border-line-strong bg-card/60 p-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void submitOwn();
+                }}
+              >
+                <label htmlFor="own" className="text-sm font-medium text-ink">
+                  Know a better way to say it?
+                </label>
+                <p className="mt-1 text-xs text-muted">
+                  Write your own Chinese line. A reviewer checks it, and if it passes it
+                  joins the bank for everyone, with your wording.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <input
+                    id="own"
+                    lang="zh-Hans"
+                    value={ownInput}
+                    onChange={(e) => setOwnInput(e.target.value.slice(0, 200))}
+                    placeholder="例如：周六我想叫个朋友来家里吃饭，可以吗？"
+                    className="min-w-0 flex-1 rounded-xl border border-line bg-paper px-4 py-2.5 text-base text-ink placeholder:text-muted/60 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  />
+                  <button
+                    type="submit"
+                    disabled={ownInput.trim().length === 0}
+                    className="rounded-full border border-ink px-4 py-2 text-sm text-ink hover:bg-ink hover:text-paper disabled:opacity-40"
+                  >
+                    Send for a human check
+                  </button>
+                </div>
+                {ownError && (
+                  <p role="alert" className="mt-2 text-xs text-accent-deep">{ownError}</p>
+                )}
+              </form>
+            )}
           </>
         )}
       </div>

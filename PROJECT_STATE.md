@@ -1,6 +1,6 @@
 # PROJECT_STATE — Mandarin Message Composer & Meaning Coach
 
-Last updated: 2026-11-15 (Phase 4 milestone A: production build, hardening, demo runbook)
+Last updated: 2026-11-15 (Phase 4B: live review status, own wording, community tier; demo rehearsed)
 
 ## What it is
 A responsive web app for English-speaking beginner Mandarin learners. The user types
@@ -153,3 +153,21 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
   will show them modified after a demo session. Commit or discard deliberately.
 - Next.js 16: do not add `export const runtime` to route files (conflicts with
   `cacheComponents`).
+
+## Phase 4B additions (2026-11-15)
+- Live review status: `GET /api/review/status?ids=` reads `review-queue.json` and
+  `review-decisions.json` (written by decide). The composer polls every 4 s while a
+  requested line is waiting and updates the card in place: "Approved by…", "Approved
+  with a change" (card text, pinyin and badge switch to the reviewer's wording), or
+  "Rejected by the reviewer".
+- Own wording: under live results, "Know a better way to say it?" lets the user submit
+  their own Chinese line (`source: "user"`, provenance `user-submitted`). It appears as a
+  fourth card and goes through the same queue, screen and badges.
+- Three trust tiers are visible on cards: "Checked by a native speaker" (official code,
+  name bound to `REVIEWER_NAME`), "Checked by a community member" (`COMMUNITY_CODE`,
+  name typed), and the AI / user "not yet checked" labels. A count line shows
+  "N of M checked by a person".
+- `.env.local` now has `COMMUNITY_CODE=friends-2026` for community reviewers.
+- Rehearsal done on laptop + phone over local Wi-Fi; production build passes.
+- Test data policy: lines approved during Claude's tests were removed from the bank so
+  no badge carries a reviewer's name without that reviewer having approved it.

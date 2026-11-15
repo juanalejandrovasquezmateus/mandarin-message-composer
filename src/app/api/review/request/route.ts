@@ -3,11 +3,15 @@ import { normalizeZh, verifiedPhrases } from "@/lib/phrase-bank";
 import { reviewRequestSchema } from "@/lib/schemas";
 import { readQueue, writeQueue } from "@/lib/server/bank-store";
 import { allowRequest, clientIp } from "@/lib/server/limits";
+import { toPinyin } from "@/lib/server/pinyin";
 import type { ReviewRequestItem } from "@/lib/types";
 
 const QUEUE_MAX = 200;
 
-/** A user asks a human to check a line. Sends the line and their intent. */
+/**
+ * A user asks a human to check a line (an AI candidate or their own wording).
+ * Sends the line and their intent. Returns an id the page can poll.
+ */
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const parsed = reviewRequestSchema.safeParse(body);
@@ -17,27 +21,39 @@ export async function POST(req: Request) {
   if (!allowRequest(clientIp(req))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
-  const item = parsed.data;
+  const { source, ...item } = parsed.data;
   const key = normalizeZh(item.chinese);
 
-  if ((await verifiedPhrases()).some((p) => normalizeZh(p.chinese) === key)) {
-    return NextResponse.json({ status: "already_verified" });
+  const existing = (await verifiedPhrases()).find((p) => normalizeZh(p.chinese) === key);
+  if (existing) {
+    return NextResponse.json({
+      status: "already_verified",
+      level: existing.verification.level,
+      verifiedBy: existing.verification.verifiedBy,
+    });
   }
   const queue = await readQueue();
-  if (queue.some((q) => normalizeZh(q.chinese) === key)) {
-    return NextResponse.json({ status: "already_queued", position: queue.length });
+  const dup = queue.find((q) => normalizeZh(q.chinese) === key);
+  if (dup) {
+    return NextResponse.json({ status: "already_queued", id: dup.id, position: queue.length });
   }
   if (queue.length >= QUEUE_MAX) {
     return NextResponse.json({ error: "queue_full" }, { status: 503 });
   }
   const entry: ReviewRequestItem = {
     id: crypto.randomUUID(),
-    ...item,
+    chinese: item.chinese,
+    pinyin: item.pinyin || toPinyin(item.chinese),
+    english: item.english || item.intent,
+    intent: item.intent,
+    relationship: item.relationship,
+    tone: item.tone,
+    context: item.context,
     region: "mainland",
-    provenance: "ai-generated",
+    provenance: source === "user" ? "user-submitted" : "ai-generated",
     submittedAt: new Date().toISOString(),
   };
   queue.push(entry);
   await writeQueue(queue);
-  return NextResponse.json({ status: "queued", position: queue.length });
+  return NextResponse.json({ status: "queued", id: entry.id, position: queue.length });
 }

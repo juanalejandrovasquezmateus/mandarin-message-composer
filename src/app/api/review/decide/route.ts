@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import { keywordsFor } from "@/lib/keywords";
 import { reviewDecideSchema } from "@/lib/schemas";
 import { hasProvider, providerErrorReason, screenEdit } from "@/lib/server/ai";
-import { appendToBank, readQueue, removeFromQueue } from "@/lib/server/bank-store";
+import {
+  appendToBank,
+  readQueue,
+  recordDecision,
+  removeFromQueue,
+} from "@/lib/server/bank-store";
 import { cacheClear } from "@/lib/server/limits";
 import { toPinyin } from "@/lib/server/pinyin";
 import {
@@ -35,6 +40,7 @@ export async function POST(req: Request) {
 
   if (d.decision === "reject") {
     await removeFromQueue(d.id);
+    await recordDecision({ id: d.id, status: "rejected", date: new Date().toISOString() });
     return NextResponse.json({ status: "rejected" });
   }
 
@@ -87,6 +93,17 @@ export async function POST(req: Request) {
   };
   await appendToBank(entry);
   await removeFromQueue(d.id);
+  await recordDecision({
+    id: d.id,
+    status: "approved",
+    chinese: entry.chinese,
+    pinyin: entry.pinyin,
+    changed: entry.chinese !== item.chinese,
+    level,
+    verifiedBy: entry.verification.verifiedBy,
+    note: entry.verification.note,
+    date: entry.verification.date,
+  });
   // Cached compositions may now have a verified match; drop them.
   cacheClear("compose:");
   return NextResponse.json({ status: "verified", entry });

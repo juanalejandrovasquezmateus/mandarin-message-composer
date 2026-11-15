@@ -5,6 +5,7 @@ import type {
   ComposeRequest,
   ComposeResult,
   ResultSource,
+  ReviewStatus,
   VerifyRequest,
   VerifyResult,
 } from "./types";
@@ -67,12 +68,18 @@ async function demoFallback(req: ComposeRequest, reason: string): Promise<Compos
   return { result, source: "demo", note };
 }
 
-export type ReviewRequestOutcome = "queued" | "already_queued" | "already_verified";
+export interface ReviewRequestOutcome {
+  status: "queued" | "already_queued" | "already_verified";
+  id?: string;
+  level?: "native" | "community";
+  verifiedBy?: string;
+}
 
 /** Sends a line (plus the user's intent) to the human review queue. */
 export async function requestHumanCheck(
-  candidate: Candidate,
+  candidate: Pick<Candidate, "chinese" | "pinyin" | "english">,
   req: ComposeRequest,
+  source: "ai" | "user" = "ai",
 ): Promise<ReviewRequestOutcome> {
   const r = await fetch("/api/review/request", {
     method: "POST",
@@ -85,11 +92,22 @@ export async function requestHumanCheck(
       relationship: req.relationship,
       tone: req.tone,
       context: req.context,
+      source,
     }),
   });
+  if (r.status === 400) throw new UserFacingError("That doesn't look like a Chinese line.");
   if (!r.ok) throw new UserFacingError("Couldn't send this line for review.");
-  const data = (await r.json()) as { status: ReviewRequestOutcome };
-  return data.status;
+  return (await r.json()) as ReviewRequestOutcome;
+}
+
+/** Polls the outcome of requested lines. */
+export async function fetchReviewStatus(ids: string[]): Promise<ReviewStatus[]> {
+  const r = await fetch(`/api/review/status?ids=${encodeURIComponent(ids.join(","))}`, {
+    cache: "no-store",
+  });
+  if (!r.ok) return [];
+  const data = (await r.json()) as { statuses: ReviewStatus[] };
+  return data.statuses;
 }
 
 export async function verifyLine(

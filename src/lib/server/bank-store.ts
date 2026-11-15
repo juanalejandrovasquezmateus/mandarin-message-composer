@@ -4,11 +4,13 @@
 // store would replace this module.
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { ReviewRequestItem, VerifiedPhrase } from "../types";
+import type { ReviewRequestItem, ReviewStatus, VerifiedPhrase } from "../types";
 
 const DATA_DIR = path.join(process.cwd(), "src", "data");
 const BANK_FILE = path.join(DATA_DIR, "verified-phrases.json");
 const QUEUE_FILE = path.join(DATA_DIR, "review-queue.json");
+const DECISIONS_FILE = path.join(DATA_DIR, "review-decisions.json");
+const DECISIONS_MAX = 500;
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
   try {
@@ -36,6 +38,15 @@ export async function appendToBank(entry: VerifiedPhrase) {
   if (idx >= 0) bank[idx] = entry;
   else bank.push(entry);
   await writeBank(bank);
+}
+
+export const readDecisions = () => readJson<ReviewStatus[]>(DECISIONS_FILE, []);
+
+/** Remembers the outcome of a request so the asking page can show it live. */
+export async function recordDecision(d: ReviewStatus) {
+  const all = (await readDecisions()).filter((x) => x.id !== d.id);
+  all.push(d);
+  await writeJson(DECISIONS_FILE, all.slice(-DECISIONS_MAX));
 }
 
 export async function removeFromQueue(id: string) {
