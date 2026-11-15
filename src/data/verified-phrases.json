@@ -4,7 +4,13 @@
     "sourceLanguage": "en",
     "targetLanguage": "zh-Hans",
     "intent": "Thank a friend for helping, casually",
-    "keywords": ["thank", "thanks", "help", "homework", "grateful"],
+    "keywords": [
+      "thank",
+      "thanks",
+      "help",
+      "homework",
+      "grateful"
+    ],
     "relationship": "friend",
     "tone": "casual",
     "context": "Texting a friend after they helped with something small",
@@ -13,14 +19,26 @@
     "pinyin": "Zuòyè de shì duōkuī yǒu nǐ, tài gǎnxiè le!",
     "english": "Couldn't have done the homework without you, thanks so much!",
     "nuance": "Warm and natural. 多亏有你 is how friends give each other credit.",
-    "verification": { "status": "pending", "level": "native", "verifiedBy": "", "note": "", "date": "" }
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
   },
   {
     "id": "meet-classmate-natural",
     "sourceLanguage": "en",
     "targetLanguage": "zh-Hans",
     "intent": "Ask a classmate to study together tomorrow",
-    "keywords": ["meet", "study", "tomorrow", "review", "together"],
+    "keywords": [
+      "meet",
+      "study",
+      "tomorrow",
+      "review",
+      "together"
+    ],
     "relationship": "classmate",
     "tone": "friendly",
     "context": "Before a test, asking a classmate to review together",
@@ -29,14 +47,27 @@
     "pinyin": "Míngtiān yǒu kòng ma? Yào bu yào yìqǐ fùxí?",
     "english": "Free tomorrow? Want to review together?",
     "nuance": "Check availability first, then suggest. 复习 fits when a test is coming.",
-    "verification": { "status": "pending", "level": "native", "verifiedBy": "", "note": "", "date": "" }
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
   },
   {
     "id": "dinner-family-fitted",
     "sourceLanguage": "en",
     "targetLanguage": "zh-Hans",
     "intent": "Thank a host mother for a delicious dinner",
-    "keywords": ["dinner", "delicious", "food", "meal", "cooking", "host"],
+    "keywords": [
+      "dinner",
+      "delicious",
+      "food",
+      "meal",
+      "cooking",
+      "host"
+    ],
     "relationship": "family",
     "tone": "appreciative",
     "context": "Host family, speaking to the mother after dinner",
@@ -45,14 +76,27 @@
     "pinyin": "Āyí, jīntiān de cài tài hǎochī le, xièxie nín xīnkǔ zuòfàn!",
     "english": "Auntie, the food today was amazing, thank you for cooking!",
     "nuance": "您 and 辛苦 acknowledge her effort, which matters with elders.",
-    "verification": { "status": "pending", "level": "native", "verifiedBy": "", "note": "", "date": "" }
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
   },
   {
     "id": "late-assignment-fitted",
     "sourceLanguage": "en",
     "targetLanguage": "zh-Hans",
     "intent": "Apologize to a teacher for a late assignment",
-    "keywords": ["sorry", "apolog", "late", "assignment", "homework", "teacher"],
+    "keywords": [
+      "sorry",
+      "apolog",
+      "late",
+      "assignment",
+      "homework",
+      "teacher"
+    ],
     "relationship": "teacher",
     "tone": "polite",
     "context": "Messaging a teacher after missing a deadline",
@@ -61,6 +105,1213 @@
     "pinyin": "Lǎoshī nín hǎo, hěn bàoqiàn zuòyè jiāo wǎn le, gěi nín tiān máfan le, xiàcì yídìng ànshí jiāo.",
     "english": "Hello teacher, I'm very sorry the assignment was late and for the trouble. I'll hand it in on time next time.",
     "nuance": "抱歉, 您, 添麻烦 and a promise to do better: the shape of a respectful apology.",
-    "verification": { "status": "pending", "level": "native", "verifiedBy": "", "note": "", "date": "" }
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-1",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Thanking someone for dinner",
+    "keywords": [
+      "thank",
+      "dinner",
+      "mak",
+      "deliciou"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "After dinner with host family",
+    "region": "mainland",
+    "chinese": "谢谢你们准备晚饭，特别好吃！",
+    "pinyin": "Xièxie nǐmen zhǔnbèi wǎnfàn, tèbié hǎochī!",
+    "english": "Thanks for making dinner. It was delicious!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-2",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Thanking someone for their notes",
+    "keywords": [
+      "thank",
+      "note",
+      "send",
+      "help"
+    ],
+    "relationship": "classmate",
+    "tone": "appreciative",
+    "context": "After receiving class notes",
+    "region": "mainland",
+    "chinese": "谢谢你把笔记发给我，帮了我大忙！",
+    "pinyin": "Xièxie nǐ bǎ bǐjì fā gěi wǒ, bāng le wǒ dà máng!",
+    "english": "Thanks for sending me your notes. They really helped!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-3",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Thanking a teacher for an explanation",
+    "keywords": [
+      "thank",
+      "teacher",
+      "explanatio",
+      "explain",
+      "understand"
+    ],
+    "relationship": "teacher",
+    "tone": "appreciative",
+    "context": "After extra help with a lesson",
+    "region": "mainland",
+    "chinese": "谢谢老师，我现在明白了！",
+    "pinyin": "Xièxie lǎoshī, wǒ xiànzài míngbai le!",
+    "english": "Thank you for explaining. I understand now!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-4",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Apologizing for a late reply",
+    "keywords": [
+      "apolog",
+      "late",
+      "reply",
+      "sorry",
+      "message"
+    ],
+    "relationship": "friend",
+    "tone": "casual",
+    "context": "Replying after a busy day",
+    "region": "mainland",
+    "chinese": "不好意思，刚看到消息！",
+    "pinyin": "Bù hǎoyìsi, gāng kàndào xiāoxi!",
+    "english": "Sorry! I only just saw your message!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-5",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Apologizing for running late",
+    "keywords": [
+      "apolog",
+      "runn",
+      "late",
+      "sorry",
+      "minute"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "On the way to a study session",
+    "region": "mainland",
+    "chinese": "不好意思，我可能要晚到十分钟。",
+    "pinyin": "Bù hǎoyìsi, wǒ kěnéng yào wǎn dào shí fēnzhōng.",
+    "english": "Sorry! I might be ten minutes late.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-6",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Apologizing for sending the wrong file",
+    "keywords": [
+      "apolog",
+      "send",
+      "wrong",
+      "file",
+      "sorry",
+      "sent",
+      "correct"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "After submitting homework by message",
+    "region": "mainland",
+    "chinese": "老师，不好意思，我刚才发错文件了，现在重新发给您。",
+    "pinyin": "Lǎoshī, bù hǎoyìsi, wǒ gāngcái fā cuò wénjiàn le, xiànzài chóngxīn fā gěi nín.",
+    "english": "Sorry! I sent the wrong file. I'll send you the correct one now.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-7",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Inviting someone for coffee",
+    "keywords": [
+      "invit",
+      "coffee",
+      "free",
+      "weekend",
+      "grab"
+    ],
+    "relationship": "friend",
+    "tone": "casual",
+    "context": "Making weekend plans",
+    "region": "mainland",
+    "chinese": "周末有空吗？一起喝杯咖啡吧！",
+    "pinyin": "Zhōumò yǒu kòng ma? Yìqǐ hē bēi kāfēi ba!",
+    "english": "Are you free this weekend? Let's grab a coffee!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-8",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Inviting someone to lunch",
+    "keywords": [
+      "invit",
+      "lunch",
+      "together",
+      "class"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "After a morning class",
+    "region": "mainland",
+    "chinese": "下课后要不要一起吃午饭？",
+    "pinyin": "Xiàkè hòu yào bu yào yìqǐ chī wǔfàn?",
+    "english": "Want to have lunch together after class?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-9",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Inviting someone for a walk",
+    "keywords": [
+      "invit",
+      "walk",
+      "together",
+      "tonight"
+    ],
+    "relationship": "family",
+    "tone": "friendly",
+    "context": "An evening with host family",
+    "region": "mainland",
+    "chinese": "晚上要不要一起出去散步？",
+    "pinyin": "Wǎnshang yào bu yào yìqǐ chūqù sànbù?",
+    "english": "Would you like to go for a walk together tonight?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-10",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking someone to take a photo",
+    "keywords": [
+      "ask",
+      "take",
+      "photo"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "During a day out",
+    "region": "mainland",
+    "chinese": "能帮我拍张照吗？",
+    "pinyin": "Néng bāng wǒ pāi zhāng zhào ma?",
+    "english": "Could you take a photo of me?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-11",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking someone to save a seat",
+    "keywords": [
+      "ask",
+      "save",
+      "seat",
+      "soon"
+    ],
+    "relationship": "classmate",
+    "tone": "casual",
+    "context": "Before arriving for class",
+    "region": "mainland",
+    "chinese": "能帮我留个座位吗？我马上到。",
+    "pinyin": "Néng bāng wǒ liú ge zuòwèi ma? Wǒ mǎshàng dào.",
+    "english": "Could you save me a seat? I'll be there soon.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-12",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking someone to collect a package",
+    "keywords": [
+      "ask",
+      "collect",
+      "package",
+      "away",
+      "home",
+      "today",
+      "please",
+      "receive"
+    ],
+    "relationship": "family",
+    "tone": "polite",
+    "context": "A delivery while away from home",
+    "region": "mainland",
+    "chinese": "我今天不在家，能麻烦您帮我收一下快递吗？",
+    "pinyin": "Wǒ jīntiān bú zài jiā, néng máfan nín bāng wǒ shōu yíxià kuàidì ma?",
+    "english": "I'm away from home today. Could you please receive a package for me?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-13",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Declining a dinner invitation",
+    "keywords": [
+      "declin",
+      "dinner",
+      "invitation",
+      "thank",
+      "invit",
+      "busy",
+      "tonight",
+      "together",
+      "another",
+      "time"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "A conflicting evening commitment",
+    "region": "mainland",
+    "chinese": "谢谢你叫我，不过我今晚有事，下次一起吃吧！",
+    "pinyin": "Xièxie nǐ jiào wǒ, búguò wǒ jīnwǎn yǒu shì, xià cì yìqǐ chī ba!",
+    "english": "Thanks for inviting me! I'm busy tonight. Let's eat together another time!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-14",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Declining a study invitation",
+    "keywords": [
+      "declin",
+      "study",
+      "invitation",
+      "sorry",
+      "busy",
+      "afternoon",
+      "can't",
+      "join",
+      "time"
+    ],
+    "relationship": "classmate",
+    "tone": "polite",
+    "context": "A busy afternoon",
+    "region": "mainland",
+    "chinese": "不好意思，我下午没空，这次就不一起复习了。",
+    "pinyin": "Bù hǎoyìsi, wǒ xiàwǔ méi kòng, zhè cì jiù bù yìqǐ fùxí le.",
+    "english": "Sorry! I'm busy this afternoon and can't join you to study this time.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-15",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Declining an offer of a ride",
+    "keywords": [
+      "declin",
+      "offer",
+      "ride",
+      "thank",
+      "don't",
+      "pick",
+      "take",
+      "subway",
+      "back"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "Returning home by subway",
+    "region": "mainland",
+    "chinese": "谢谢您，不用来接我了，我坐地铁回去就行。",
+    "pinyin": "Xièxie nín, bú yòng lái jiē wǒ le, wǒ zuò dìtiě huíqù jiù xíng.",
+    "english": "Thank you! You don't need to pick me up. I can take the subway back.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-16",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Congratulating someone on passing an exam",
+    "keywords": [
+      "congratula",
+      "pass",
+      "exam"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "After exam results arrive",
+    "region": "mainland",
+    "chinese": "恭喜你通过考试！",
+    "pinyin": "Gōngxǐ nǐ tōngguò kǎoshì!",
+    "english": "Congratulations on passing the exam!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-17",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Congratulating someone on a new job",
+    "keywords": [
+      "congratula",
+      "celebrate",
+      "you're",
+      "free"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "After hearing good news",
+    "region": "mainland",
+    "chinese": "恭喜你找到新工作！有空一起庆祝一下！",
+    "pinyin": "Gōngxǐ nǐ zhǎodào xīn gōngzuò! Yǒu kòng yìqǐ qìngzhù yíxià!",
+    "english": "Congratulations on the new job! Let's celebrate when you're free!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-18",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Checking in on a sick friend",
+    "keywords": [
+      "check",
+      "sick",
+      "friend",
+      "feel",
+      "better",
+      "today",
+      "plenty",
+      "rest"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "The day after hearing they are ill",
+    "region": "mainland",
+    "chinese": "今天感觉好点了吗？多休息呀。",
+    "pinyin": "Jīntiān gǎnjué hǎo diǎn le ma? Duō xiūxi ya.",
+    "english": "Are you feeling any better today? Get plenty of rest.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-19",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Checking in on a sick host family member",
+    "keywords": [
+      "check",
+      "sick",
+      "host",
+      "family",
+      "member",
+      "feel",
+      "better",
+      "today",
+      "pick"
+    ],
+    "relationship": "family",
+    "tone": "polite",
+    "context": "While staying with a host family",
+    "region": "mainland",
+    "chinese": "您今天好点了吗？需要我帮您买点什么吗？",
+    "pinyin": "Nín jīntiān hǎo diǎn le ma? Xūyào wǒ bāng nín mǎi diǎn shénme ma?",
+    "english": "Are you feeling better today? Can I pick anything up for you?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-20",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Offering notes to a sick classmate",
+    "keywords": [
+      "offer",
+      "note",
+      "sick",
+      "classmate",
+      "heard",
+      "you're",
+      "send",
+      "today'"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "After they miss a class",
+    "region": "mainland",
+    "chinese": "听说你生病了，今天的笔记要不要我发给你？",
+    "pinyin": "Tīngshuō nǐ shēngbìng le, jīntiān de bǐjì yào bu yào wǒ fā gěi nǐ?",
+    "english": "I heard you're sick. Would you like me to send you today's notes?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-21",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking for help understanding homework",
+    "keywords": [
+      "ask",
+      "help",
+      "understand",
+      "homework",
+      "don't",
+      "question",
+      "explain"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "Working on an assignment",
+    "region": "mainland",
+    "chinese": "这道题我没看懂，你能给我讲一下吗？",
+    "pinyin": "Zhè dào tí wǒ méi kàndǒng, nǐ néng gěi wǒ jiǎng yíxià ma?",
+    "english": "I don't understand this question. Could you explain it to me?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-22",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking a teacher about homework instructions",
+    "keywords": [
+      "ask",
+      "teacher",
+      "homework",
+      "instructio",
+      "many",
+      "chinese",
+      "character",
+      "write",
+      "assignment"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "Before starting an assignment",
+    "region": "mainland",
+    "chinese": "老师，请问这次作业要写多少字？",
+    "pinyin": "Lǎoshī, qǐngwèn zhè cì zuòyè yào xiě duōshao zì?",
+    "english": "How many Chinese characters should we write for this assignment?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-23",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking for help checking Chinese homework",
+    "keywords": [
+      "ask",
+      "help",
+      "check",
+      "chinese",
+      "homework",
+      "time",
+      "worri",
+      "sentence",
+      "sound",
+      "unnatural"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "Finishing a Chinese assignment",
+    "region": "mainland",
+    "chinese": "你有空帮我看看中文作业吗？我怕有些句子不太自然。",
+    "pinyin": "Nǐ yǒu kòng bāng wǒ kànkan Zhōngwén zuòyè ma? Wǒ pà yǒuxiē jùzi bú tài zìrán.",
+    "english": "Do you have time to check my Chinese homework? I'm worried some sentences sound unnatural.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-24",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Confirming a meeting time",
+    "keywords": [
+      "confirm",
+      "meet",
+      "time",
+      "we're",
+      "tomorrow",
+      "three",
+      "afternoon",
+      "right"
+    ],
+    "relationship": "friend",
+    "tone": "casual",
+    "context": "Before meeting the next day",
+    "region": "mainland",
+    "chinese": "我们明天下午三点见，对吧？",
+    "pinyin": "Wǒmen míngtiān xiàwǔ sān diǎn jiàn, duì ba?",
+    "english": "We're meeting tomorrow at three in the afternoon, right?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-25",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Confirming a meeting place",
+    "keywords": [
+      "confirm",
+      "meet",
+      "place",
+      "library",
+      "entrance"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "Before a group study session",
+    "region": "mainland",
+    "chinese": "我们是在图书馆门口见吗？",
+    "pinyin": "Wǒmen shì zài túshūguǎn ménkǒu jiàn ma?",
+    "english": "Are we meeting at the library entrance?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-26",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Confirming an appointment with a teacher",
+    "keywords": [
+      "confirm",
+      "appointmen",
+      "teacher",
+      "we're",
+      "meet",
+      "tomorrow",
+      "afternoon",
+      "right"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "Before an arranged meeting",
+    "region": "mainland",
+    "chinese": "老师，想跟您确认一下，我们明天下午两点见面，对吗？",
+    "pinyin": "Lǎoshī, xiǎng gēn nín quèrèn yíxià, wǒmen míngtiān xiàwǔ liǎng diǎn jiànmiàn, duì ma?",
+    "english": "I'd like to confirm that we're meeting tomorrow at two in the afternoon. Is that right?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-27",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Cancelling plans because of illness",
+    "keywords": [
+      "cancell",
+      "plan",
+      "because",
+      "illness",
+      "sorry",
+      "feel",
+      "well",
+      "can't",
+      "today",
+      "meet",
+      "another"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "Before a planned outing",
+    "region": "mainland",
+    "chinese": "不好意思，我今天不太舒服，不能跟你出去了，我们改天再约吧。",
+    "pinyin": "Bù hǎoyìsi, wǒ jīntiān bú tài shūfu, bù néng gēn nǐ chūqù le, wǒmen gǎitiān zài yuē ba.",
+    "english": "Sorry! I'm not feeling well and can't go out with you today. Let's meet another day.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-28",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Cancelling a study session",
+    "keywords": [
+      "cancell",
+      "study",
+      "session",
+      "sorry",
+      "came",
+      "can't",
+      "today"
+    ],
+    "relationship": "classmate",
+    "tone": "polite",
+    "context": "An unexpected commitment",
+    "region": "mainland",
+    "chinese": "不好意思，我临时有事，今天没法一起复习了。",
+    "pinyin": "Bù hǎoyìsi, wǒ línshí yǒu shì, jīntiān méi fǎ yìqǐ fùxí le.",
+    "english": "Sorry! Something came up and I can't study with you today.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-29",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Cancelling a meeting with a teacher",
+    "keywords": [
+      "cancell",
+      "meet",
+      "teacher",
+      "sorry",
+      "come",
+      "tomorrow",
+      "can't",
+      "make",
+      "reschedule"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "A scheduling conflict",
+    "region": "mainland",
+    "chinese": "老师，不好意思，我明天有事，没法按时见面了，可以改个时间吗？",
+    "pinyin": "Lǎoshī, bù hǎoyìsi, wǒ míngtiān yǒu shì, méi fǎ ànshí jiànmiàn le, kěyǐ gǎi ge shíjiān ma?",
+    "english": "I'm sorry! Something has come up tomorrow and I can't make our meeting. Could we reschedule?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-30",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Wishing a friend a happy birthday",
+    "keywords": [
+      "wish",
+      "friend",
+      "happy",
+      "birthday",
+      "happiness",
+      "every"
+    ],
+    "relationship": "friend",
+    "tone": "casual",
+    "context": "On their birthday",
+    "region": "mainland",
+    "chinese": "生日快乐！祝你天天开心！",
+    "pinyin": "Shēngrì kuàilè! Zhù nǐ tiāntiān kāixīn!",
+    "english": "Happy birthday! Wishing you happiness every day!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-31",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Wishing a host family member a happy birthday",
+    "keywords": [
+      "wish",
+      "host",
+      "family",
+      "member",
+      "happy",
+      "birthday",
+      "thank",
+      "alway",
+      "tak",
+      "such",
+      "good",
+      "care"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "On a host parent's birthday",
+    "region": "mainland",
+    "chinese": "祝您生日快乐！谢谢您一直这么照顾我。",
+    "pinyin": "Zhù nín shēngrì kuàilè! Xièxie nín yìzhí zhème zhàogù wǒ.",
+    "english": "Happy birthday! Thank you for always taking such good care of me.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-32",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending Chinese New Year wishes",
+    "keywords": [
+      "send",
+      "chinese",
+      "year",
+      "wish",
+      "happy",
+      "family",
+      "good",
+      "health",
+      "best"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "During Chinese New Year",
+    "region": "mainland",
+    "chinese": "新年快乐！祝你和家人身体健康，万事顺利！",
+    "pinyin": "Xīnnián kuàilè! Zhù nǐ hé jiārén shēntǐ jiànkāng, wànshì shùnlì!",
+    "english": "Happy New Year! Wishing you and your family good health and all the best!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-33",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending Mid-Autumn Festival wishes",
+    "keywords": [
+      "send",
+      "autumn",
+      "festival",
+      "wish",
+      "happy",
+      "hope",
+      "lovely"
+    ],
+    "relationship": "family",
+    "tone": "friendly",
+    "context": "During Mid-Autumn Festival",
+    "region": "mainland",
+    "chinese": "中秋快乐！希望你们今天过得开心！",
+    "pinyin": "Zhōngqiū kuàilè! Xīwàng nǐmen jīntiān guò de kāixīn!",
+    "english": "Happy Mid-Autumn Festival! Hope you all have a lovely day!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-34",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending Teachers' Day wishes",
+    "keywords": [
+      "send",
+      "teachers'",
+      "wish",
+      "happy",
+      "thank",
+      "patient",
+      "guidance"
+    ],
+    "relationship": "teacher",
+    "tone": "appreciative",
+    "context": "On Teachers' Day",
+    "region": "mainland",
+    "chinese": "老师，教师节快乐！谢谢您的耐心指导。",
+    "pinyin": "Lǎoshī, Jiàoshī Jié kuàilè! Xièxie nín de nàixīn zhǐdǎo.",
+    "english": "Happy Teachers' Day! Thank you for your patient guidance.",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-35",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking to borrow a charger",
+    "keywords": [
+      "ask",
+      "borrow",
+      "charger",
+      "phone",
+      "almost",
+      "dead"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "A low phone battery at school",
+    "region": "mainland",
+    "chinese": "我的手机快没电了，能借你的充电器用一下吗？",
+    "pinyin": "Wǒ de shǒujī kuài méi diàn le, néng jiè nǐ de chōngdiànqì yòng yíxià ma?",
+    "english": "My phone is almost dead. Could I borrow your charger?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-36",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking to borrow an umbrella",
+    "keywords": [
+      "ask",
+      "borrow",
+      "umbrella",
+      "rain",
+      "outside"
+    ],
+    "relationship": "family",
+    "tone": "polite",
+    "context": "Before going out in the rain",
+    "region": "mainland",
+    "chinese": "外面下雨了，我可以借一下您的伞吗？",
+    "pinyin": "Wàimian xià yǔ le, wǒ kěyǐ jiè yíxià nín de sǎn ma?",
+    "english": "It's raining outside. Could I borrow your umbrella?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-37",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Asking to borrow a book",
+    "keywords": [
+      "ask",
+      "borrow",
+      "book",
+      "finish",
+      "day"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "After discussing a book",
+    "region": "mainland",
+    "chinese": "你那本书看完了吗？能借我看几天吗？",
+    "pinyin": "Nǐ nà běn shū kàn wán le ma? Néng jiè wǒ kàn jǐ tiān ma?",
+    "english": "Have you finished that book? Could I borrow it for a few days?",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-38",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending a first message to a new friend",
+    "keywords": [
+      "send",
+      "first",
+      "message",
+      "friend",
+      "alex",
+      "today'",
+      "language",
+      "exchange",
+      "great",
+      "meet"
+    ],
+    "relationship": "friend",
+    "tone": "friendly",
+    "context": "After meeting at a language exchange",
+    "region": "mainland",
+    "chinese": "你好！我是今天语言交换活动上认识的Alex，很高兴认识你！",
+    "pinyin": "Nǐ hǎo! Wǒ shì jīntiān yǔyán jiāohuàn huódòng shàng rènshi de Alex, hěn gāoxìng rènshi nǐ!",
+    "english": "Hi! It's Alex from today's language exchange. Great to meet you!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-39",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending a first message to a classmate",
+    "keywords": [
+      "send",
+      "first",
+      "message",
+      "classmate",
+      "alex",
+      "chinese",
+      "class",
+      "look",
+      "forward",
+      "chatt",
+      "more"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "After exchanging contact details",
+    "region": "mainland",
+    "chinese": "你好，我是和你一起上中文课的Alex，以后多多交流！",
+    "pinyin": "Nǐ hǎo, wǒ shì hé nǐ yìqǐ shàng Zhōngwén kè de Alex, yǐhòu duōduō jiāoliú!",
+    "english": "Hi! I'm Alex from your Chinese class. Looking forward to chatting more!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
+  },
+  {
+    "id": "rev-40",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Sending a first message to a teacher",
+    "keywords": [
+      "send",
+      "first",
+      "message",
+      "teacher",
+      "hello",
+      "alex",
+      "student",
+      "class",
+      "look",
+      "forward",
+      "learn"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "After adding a teacher on WeChat",
+    "region": "mainland",
+    "chinese": "老师您好，我是您班上的新同学Alex，以后请多指教！",
+    "pinyin": "Lǎoshī nín hǎo, wǒ shì nín bān shàng de xīn tóngxué Alex, yǐhòu qǐng duō zhǐjiào!",
+    "english": "Hello! I'm Alex, a new student in your class. I look forward to learning from you!",
+    "nuance": "",
+    "verification": {
+      "status": "pending",
+      "level": "native",
+      "verifiedBy": "",
+      "note": "",
+      "date": ""
+    }
   }
 ]

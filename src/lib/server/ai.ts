@@ -7,6 +7,12 @@ import { gapSchema, literalSchema, modelComposeSchema, type ModelCompose } from 
 import type { ComposeRequest, VerifyRequest, VerifyResult } from "../types";
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
+// Reasoning depth for composing. "low" keeps latency down for a chat-like UI;
+// raise via env if quality needs it.
+const COMPOSE_EFFORT = (process.env.COMPOSE_EFFORT || "low") as
+  | "low"
+  | "medium"
+  | "high";
 
 export function hasProvider(): boolean {
   return Boolean(process.env.ANTHROPIC_API_KEY);
@@ -66,7 +72,7 @@ export async function generateCandidates(
     model: MODEL,
     max_tokens: 16000,
     system: COMPOSE_SYSTEM,
-    output_config: { effort: "medium", format: zodOutputFormat(modelComposeSchema) },
+    output_config: { effort: COMPOSE_EFFORT, format: zodOutputFormat(modelComposeSchema) },
     messages: [{ role: "user", content: composeUserMessage(req, verified) }],
   });
   if (res.stop_reason === "refusal") throw new ProviderRefusal("refused");
@@ -75,7 +81,7 @@ export async function generateCandidates(
 }
 
 const LITERAL_SYSTEM = `You are a literal translator. You will see ONE Chinese message and nothing else about who wrote it or why.
-Translate it literally into English so that a beginner can see exactly what each part says. Keep particles and politeness markers visible, e.g. "(respectful you)", "(softener)". Do not improve or interpret it.
+Translate it literally into English so that a beginner can see exactly what each part says. Keep particles and politeness markers visible, e.g. "(respectful you)", "(softener)". Do not improve or interpret it. Keep it to one or two sentences, under 50 words, with no separate breakdown.
 Also classify its register as one of: casual, neutral, polite, formal.`;
 
 const GAP_SYSTEM = `You compare what someone meant to say (in English) with a Chinese message and its literal back-translation.
