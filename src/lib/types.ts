@@ -115,6 +115,48 @@ export interface VerifyRequest {
   tone: Tone;
 }
 
+/** One entry in the phrase bank (src/data/verified-phrases.json). */
+export interface VerifiedPhrase {
+  id: string;
+  sourceLanguage: LanguageCode;
+  targetLanguage: LanguageCode;
+  intent: string;
+  keywords: string[];
+  relationship: Relationship;
+  tone: Tone;
+  context: string;
+  region: Region;
+  chinese: string;
+  pinyin: string;
+  english: string;
+  nuance: string;
+  verification: {
+    status: "pending" | "verified" | "rejected";
+    level: "native" | "community";
+    verifiedBy: string;
+    note: string;
+    date: string;
+  };
+}
+
+/** A line a user asked a human to check (src/data/review-queue.json). */
+export interface ReviewRequestItem {
+  id: string;
+  chinese: string;
+  pinyin: string;
+  english: string;
+  intent: string;
+  relationship: Relationship;
+  tone: Tone;
+  context?: string;
+  region: Region;
+  provenance: Provenance;
+  submittedAt: string;
+}
+
+export type ReviewDecision = "keep" | "fix" | "reject";
+export type ReviewerLevel = "native" | "community";
+
 export interface VerifyResult {
   /** What the Chinese literally says, produced without seeing the English. */
   literalMeaning: string;

@@ -3,7 +3,13 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import type { VerifiedPhrase } from "../phrase-bank";
-import { gapSchema, literalSchema, modelComposeSchema, type ModelCompose } from "../schemas";
+import {
+  gapSchema,
+  literalSchema,
+  modelComposeSchema,
+  screenSchema,
+  type ModelCompose,
+} from "../schemas";
 import type { ComposeRequest, VerifyRequest, VerifyResult } from "../types";
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
@@ -127,6 +133,51 @@ export async function verifyCandidate(req: VerifyRequest): Promise<VerifyResult>
     literalMeaning: literal.parsed_output.literalMeaning,
     register: literal.parsed_output.register,
     gap: gap.parsed_output.gap.trim(),
+  };
+}
+
+const SCREEN_SYSTEM = `You screen edits made by human reviewers to a bank of short Chinese text messages for language learners. You are a safety net, not a judge of style: reviewers are native speakers and their wording wins unless something is clearly wrong.
+Report:
+- isSimplifiedChinese: the edited line is written in Simplified Chinese (a few Latin letters, numbers or emoji are fine).
+- appropriate: it contains nothing offensive, sexual, hateful, or unrelated to the stated situation.
+- sameMeaning: it still expresses the stated intent (tone changes and natural rephrasing are fine; a different message is not).
+- reason: one short sentence, in English, for the reviewer.`;
+
+export interface ScreenVerdict {
+  ok: boolean;
+  reason: string;
+}
+
+/** AI screen for a reviewer's edited line. Only clear problems block it. */
+export async function screenEdit(input: {
+  original: string;
+  fixed: string;
+  intent: string;
+  english: string;
+}): Promise<ScreenVerdict> {
+  const res = await getClient().messages.parse({
+    model: MODEL,
+    max_tokens: 4000,
+    system: SCREEN_SYSTEM,
+    output_config: { effort: "low", format: zodOutputFormat(screenSchema) },
+    messages: [
+      {
+        role: "user",
+        content: [
+          `Situation / intent (English): ${input.intent}`,
+          `Meaning of the original line: ${input.english}`,
+          `Original Chinese: ${input.original}`,
+          `Reviewer's edited Chinese: ${input.fixed}`,
+        ].join("\n"),
+      },
+    ],
+  });
+  if (res.stop_reason === "refusal") throw new ProviderRefusal("refused");
+  const v = res.parsed_output;
+  if (!v) throw new Error("Screen output did not match the schema");
+  return {
+    ok: v.isSimplifiedChinese && v.appropriate && v.sameMeaning,
+    reason: v.reason,
   };
 }
 

@@ -24,7 +24,45 @@ export const verifyRequestSchema = z.object({
   tone: toneSchema,
 });
 
+export const regionSchema = z.enum(["mainland", "taiwan", "other"]);
+
+/** A line that claims to be Chinese must contain at least one Han character. */
+const chineseLine = z
+  .string()
+  .trim()
+  .min(1)
+  .max(200)
+  .refine((s) => /\p{Script=Han}/u.test(s), "Not a Chinese line");
+
+export const reviewRequestSchema = z.object({
+  chinese: chineseLine,
+  pinyin: z.string().trim().max(400),
+  english: z.string().trim().max(300),
+  intent: z.string().trim().min(3).max(INTENT_MAX_CHARS),
+  relationship: relationshipSchema,
+  tone: toneSchema,
+  context: z.string().trim().max(CONTEXT_MAX_CHARS).optional(),
+});
+
+export const reviewDecideSchema = z.object({
+  id: z.string().min(1).max(80),
+  decision: z.enum(["keep", "fix", "reject"]),
+  chineseFixed: chineseLine.optional(),
+  note: z.string().trim().max(300).optional(),
+  reviewerName: z.string().trim().min(1).max(60),
+  tone: toneSchema.optional(),
+  region: regionSchema.optional(),
+  context: z.string().trim().max(CONTEXT_MAX_CHARS).optional(),
+});
+
 // --- Model output shapes -------------------------------------------------
+
+export const screenSchema = z.object({
+  isSimplifiedChinese: z.boolean(),
+  appropriate: z.boolean(),
+  sameMeaning: z.boolean(),
+  reason: z.string(),
+});
 
 const vocabSchema = z.object({
   word: z.string(),

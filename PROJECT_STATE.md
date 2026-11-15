@@ -1,6 +1,6 @@
 # PROJECT_STATE — Mandarin Message Composer & Meaning Coach
 
-Last updated: 2026-11-15 (end of Phase 2: live AI working, first verified banks imported)
+Last updated: 2026-11-15 (Phase 3 core done: reviewer desk, request-a-check, streak, library pinyin)
 
 ## What it is
 A responsive web app for English-speaking beginner Mandarin learners. The user types
@@ -37,7 +37,23 @@ streaks, growing bank) lives in the pitch; the hackathon build is the slice belo
 - `src/lib/compose.ts` — browser side: calls the routes, falls back to Demo Mode,
   surfaces rate-limit/validation errors to the user instead of hiding them.
 - Components: `IntentForm` (intent, chips, optional context), `CandidateCard` (+ skeleton,
-  `ProvenanceBadge`), `MeaningCheck` (loading/error/ready, register meter), `DraftTray`.
+  `ProvenanceBadge`, "Request a human check"), `MeaningCheck` (loading/error/ready,
+  register meter), `DraftTray`, `StreakPill`, `ReviewDesk` (page `/review`).
+- Human review loop (Phase 3):
+  - `src/lib/server/bank-store.ts` reads/writes `verified-phrases.json` and
+    `review-queue.json` at request time (file-backed; needs a writable disk).
+  - `POST /api/review/request` queues a live candidate + the user's intent (user taps).
+  - `GET /api/review/queue` and `POST /api/review/decide` need header `x-reviewer-code`
+    matching `REVIEWER_CODE` (level "native") or `COMMUNITY_CODE` (level "community").
+  - decide: keep -> bank; fix -> AI screen (`screenEdit`: Simplified? appropriate? same
+    meaning?) then bank; reject -> dropped. Approvals clear the compose cache.
+  - Compose: if the model paraphrases a matched approved line, the server restores the
+    approved wording verbatim as the "natural" candidate (`verifiedMatch` in response).
+- Pinyin: `src/lib/server/pinyin.ts` (pinyin-pro, per-syllable with tone marks, ASCII
+  punctuation, sentence capitals) is used for every live candidate and bank entry.
+  `scripts/lib/pinyin.mjs` is the Node copy used by the scripts.
+- Streak: `src/lib/streak.ts`, per device in localStorage, counts days with a copy or a
+  review request; shown as a pill in the header.
 - Design tokens in `src/app/globals.css` (`@theme`). Chinese uses the system CJK stack.
 - No database, no auth, no analytics. Draft kept in memory only. Server logs failure
   types only, never message content.
@@ -60,12 +76,18 @@ streaks, growing bank) lives in the pitch; the hackathon build is the slice belo
       check ~8 s (two sequential calls). Review CSVs imported: 40 Chinese lines approved
       by Yuwa He (native speaker), 15 Spanish lines approved by Juan Vasquez (Colombia).
 
+- [x] Phase 3 core: reviewer desk with keep/fix/reject + tone/region/note, AI screen
+      on fixes, request-a-human-check button, per-device streak, library pinyin,
+      verbatim restore of approved lines. Full loop tested from the browser:
+      request -> approve on /review -> recompose shows the green badge.
+
 ## Outstanding
-- Phase 3: reviewer page (shared reviewer code, keep/fix/reject with tone, context,
-  region), AI screening of edits, per-device streak, pinyin from `pinyin-pro`
-  (also fills pinyin for any "fix" lines, which import leaves empty), visual polish.
-  Hosted store only if the live-approval demo is confirmed.
-- Phase 4: scenario testing, Vercel deploy, demo script, bug fixes.
+- Phase 3 polish: visual pass (mobile check of /review), second-language toggle is
+  still out of scope, drop the 4 developer-written `pending` seed entries or get them
+  reviewed.
+- Phase 4: scenario testing, deployment decision (file-backed bank needs a writable
+  host or a small hosted store; a laptop demo over local Wi-Fi works as is), demo
+  script, bug fixes.
 - Bank matching is keyword-based and crude; watch for false matches on short intents.
 - Spanish bank (`verified-phrases-es.json`) is data only; no UI reads it yet.
 
@@ -90,10 +112,18 @@ npm run dev
 ```
 Open http://localhost:3000. Checks: `npx tsc --noEmit` and `npm run lint`.
 
-Review workflow: reviewers fill `decision` (keep/fix/reject), `*_fixed`, `reviewer_note`
-and `reviewer_name` in `review/phrases-to-review.csv` (Chinese) or
+Review workflow (bulk): reviewers fill `decision` (keep/fix/reject), `*_fixed`,
+`reviewer_note` and `reviewer_name` in `review/phrases-to-review.csv` (Chinese) or
 `review/spanish-to-review.csv` (Spanish), then run `npm run import:reviewed`.
 Only keep/fix rows become `verified`; everything else stays pending and never shows a badge.
+`node scripts/fill-pinyin.mjs` regenerates all bank pinyin.
+
+Review workflow (live): open `/review`, enter the reviewer code from `.env.local`
+(`REVIEWER_CODE`) and your name, load the queue, decide per line. Reachable from a phone
+on the same Wi-Fi at the "Network" URL that `npm run dev` prints.
+
+Testing note: do not round-trip Chinese through PowerShell's Invoke-RestMethod (it
+decodes JSON as Latin-1 and garbles it). Use the browser or Node for API tests.
 
 On this PC, Node and Git are installed but a freshly opened shell may need a restart to
 see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm path.
@@ -106,5 +136,9 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
   Options if needed: Sonnet 5.5 via `ANTHROPIC_MODEL`, or pre-warming the cache with
   the demo script's intents before going on stage.
 - The four original seed bank entries are still `pending` (written by the developers).
+- Compose latency varies 9-21 s with the provider's load. For the stage demo, pre-warm
+  the cache by running the demo intents once before presenting.
+- The bank files change at runtime (approvals write to `src/data/*.json`), so `git status`
+  will show them modified after a demo session. Commit or discard deliberately.
 - Next.js 16: do not add `export const runtime` to route files (conflicts with
   `cacheComponents`).

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { findVerifiedMatch, provenanceFor } from "@/lib/phrase-bank";
+import { findVerifiedMatch, normalizeZh, provenanceFor } from "@/lib/phrase-bank";
 import { composeRequestSchema } from "@/lib/schemas";
 import { generateCandidates, hasProvider, providerErrorReason } from "@/lib/server/ai";
 import { allowRequest, cacheGet, cacheSet, clientIp } from "@/lib/server/limits";
+import { toPinyin } from "@/lib/server/pinyin";
 import type { Candidate, ComposeResult } from "@/lib/types";
 
 export async function POST(req: Request) {
@@ -32,16 +33,40 @@ export async function POST(req: Request) {
   const cached = cacheGet<ComposeResult>(key);
   if (cached) return NextResponse.json({ result: cached, cached: true });
 
-  const verified = findVerifiedMatch(request);
+  const verified = await findVerifiedMatch(request);
 
   try {
     const model = await generateCandidates(request, verified);
-    const candidates: Candidate[] = model.candidates.slice(0, 3).map((c) => {
+    let raw = model.candidates.slice(0, 3);
+    if (verified) {
+      const verbatim = raw.some((c) => normalizeZh(c.chinese) === normalizeZh(verified.chinese));
+      const used = raw.some((c) => c.adaptedFromVerified);
+      if (!verbatim && used) {
+        // The model judged the approved line relevant but paraphrased it. The point
+        // of the bank is to show the approved wording, so restore it verbatim as
+        // the "natural" candidate. Vocab is left empty rather than mismatched.
+        raw = raw.map((c) =>
+          c.label === "natural"
+            ? {
+                label: "natural" as const,
+                chinese: verified.chinese,
+                pinyin: verified.pinyin,
+                english: verified.english,
+                nuance: verified.nuance || c.nuance,
+                vocab: [],
+                adaptedFromVerified: false,
+              }
+            : c,
+        );
+      }
+    }
+    const candidates: Candidate[] = raw.map((c) => {
       const provenance = provenanceFor(c.chinese, c.adaptedFromVerified, verified);
       return {
         label: c.label,
         chinese: c.chinese.trim(),
-        pinyin: c.pinyin.trim(),
+        // Pinyin comes from the library, not the model (tone marks are reliable).
+        pinyin: toPinyin(c.chinese.trim()),
         english: c.english.trim(),
         nuance: c.nuance.trim(),
         vocab: c.vocab.slice(0, 4),
@@ -63,7 +88,13 @@ export async function POST(req: Request) {
       candidates,
     };
     cacheSet(key, result);
-    return NextResponse.json({ result });
+    const usedVerified = candidates.some((c) => c.provenance.startsWith("verified"));
+    // Diagnostic only: ids, never message content.
+    console.log(`[compose] bank match: ${verified?.id ?? "none"}; shown verbatim: ${usedVerified}`);
+    return NextResponse.json({
+      result,
+      verifiedMatch: verified ? { id: verified.id, used: usedVerified } : null,
+    });
   } catch (err) {
     const { status, reason } = providerErrorReason(err);
     // Log the failure type only; never the user's message.

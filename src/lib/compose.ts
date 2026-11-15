@@ -67,6 +67,31 @@ async function demoFallback(req: ComposeRequest, reason: string): Promise<Compos
   return { result, source: "demo", note };
 }
 
+export type ReviewRequestOutcome = "queued" | "already_queued" | "already_verified";
+
+/** Sends a line (plus the user's intent) to the human review queue. */
+export async function requestHumanCheck(
+  candidate: Candidate,
+  req: ComposeRequest,
+): Promise<ReviewRequestOutcome> {
+  const r = await fetch("/api/review/request", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      chinese: candidate.chinese,
+      pinyin: candidate.pinyin,
+      english: candidate.english,
+      intent: req.intent,
+      relationship: req.relationship,
+      tone: req.tone,
+      context: req.context,
+    }),
+  });
+  if (!r.ok) throw new UserFacingError("Couldn't send this line for review.");
+  const data = (await r.json()) as { status: ReviewRequestOutcome };
+  return data.status;
+}
+
 export async function verifyLine(
   candidate: Candidate,
   req: VerifyRequest,

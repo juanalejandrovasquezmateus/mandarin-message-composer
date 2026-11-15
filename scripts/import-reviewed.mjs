@@ -9,6 +9,7 @@
 //                  empty  -> stays pending (never shown as verified)
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import { toPinyin } from "./lib/pinyin.mjs";
 
 const ROOT = process.cwd();
 const TODAY = new Date().toISOString().slice(0, 10);
@@ -93,10 +94,6 @@ function keywordsFor(...texts) {
   return [...set];
 }
 
-function normalizePinyin(p) {
-  return p.replace(/，/g, ", ").replace(/。/g, ".").replace(/\s+/g, " ").trim();
-}
-
 function verification(o) {
   const d = o.decision.toLowerCase();
   if (d === "reject") return null;
@@ -142,6 +139,7 @@ importFile(
   path.join(ROOT, "src", "data", "verified-phrases.json"),
   (o, v) => {
     const fixed = o.decision.toLowerCase() === "fix" && o.chinese_fixed;
+    const chinese = fixed ? o.chinese_fixed : o.chinese_ai;
     return {
       id: `rev-${o.id}`,
       sourceLanguage: "en",
@@ -152,9 +150,9 @@ importFile(
       tone: o.tone,
       context: o.context,
       region: o.region.toLowerCase(),
-      chinese: fixed ? o.chinese_fixed : o.chinese_ai,
-      // A fixed line's pinyin is unknown until regenerated (Phase 3).
-      pinyin: fixed ? "" : normalizePinyin(o.pinyin_ai),
+      chinese,
+      // Pinyin always comes from the library, never from the CSV.
+      pinyin: toPinyin(chinese),
       english: o.english_ai,
       nuance: o.reviewer_note || "",
       verification: v,

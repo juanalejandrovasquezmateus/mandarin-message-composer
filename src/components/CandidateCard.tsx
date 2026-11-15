@@ -3,13 +3,25 @@
 import { CANDIDATE_LABELS, type Candidate } from "@/lib/types";
 import { ProvenanceBadge } from "./ProvenanceBadge";
 
+export type ReviewRequestState = "idle" | "sending" | "sent" | "verified" | "error";
+
 interface Props {
   candidate: Candidate;
   selected: boolean;
   inDraft: boolean;
   onSelect: () => void;
   onAdd: () => void;
+  /** Present only when a human check can be requested (live results). */
+  review?: { state: ReviewRequestState; onRequest: () => void };
 }
+
+const REVIEW_LABEL: Record<ReviewRequestState, string> = {
+  idle: "Request a human check",
+  sending: "Sending…",
+  sent: "Sent to a reviewer",
+  verified: "Already checked",
+  error: "Couldn't send. Tap to retry",
+};
 
 export function CandidateCard({
   candidate,
@@ -17,8 +29,11 @@ export function CandidateCard({
   inDraft,
   onSelect,
   onAdd,
+  review,
 }: Props) {
   const meta = CANDIDATE_LABELS[candidate.label];
+  const canRequest =
+    review && (candidate.provenance === "ai-generated" || candidate.provenance === "ai-adapted");
   return (
     <article
       className={`rounded-2xl border bg-card p-4 shadow-sm transition-colors sm:p-5 ${
@@ -48,11 +63,29 @@ export function CandidateCard({
       <p className="mt-2 border-l-2 border-line pl-3 text-sm leading-relaxed text-muted">
         {candidate.nuance}
       </p>
-      <div className="mt-3">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <ProvenanceBadge
           provenance={candidate.provenance}
           note={candidate.verifierNote}
         />
+        {canRequest && (
+          <button
+            type="button"
+            onClick={review.onRequest}
+            disabled={review.state === "sending" || review.state === "sent" || review.state === "verified"}
+            title="Sends this line and your English intent to a native-speaking reviewer."
+            className={`text-xs underline-offset-2 ${
+              review.state === "sent" || review.state === "verified"
+                ? "text-ok"
+                : review.state === "error"
+                  ? "text-accent-deep underline"
+                  : "text-muted hover:text-ink hover:underline"
+            } disabled:cursor-default`}
+          >
+            {review.state === "sent" ? "✓ " : ""}
+            {REVIEW_LABEL[review.state]}
+          </button>
+        )}
       </div>
 
       <footer className="mt-4 flex flex-wrap gap-2">

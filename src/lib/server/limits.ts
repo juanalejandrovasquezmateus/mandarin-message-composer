@@ -25,6 +25,13 @@ export function cacheSet(key: string, value: unknown) {
   cache.set(key, { value, at: Date.now() });
 }
 
+/** Drops every cached entry whose key starts with `prefix`. */
+export function cacheClear(prefix: string) {
+  for (const key of [...cache.keys()]) {
+    if (key.startsWith(prefix)) cache.delete(key);
+  }
+}
+
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 30;
 const hits = new Map<string, number[]>();

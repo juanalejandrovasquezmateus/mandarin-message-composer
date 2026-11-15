@@ -1,8 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { composeMessage, UserFacingError, verifyLine } from "@/lib/compose";
+import {
+  composeMessage,
+  requestHumanCheck,
+  UserFacingError,
+  verifyLine,
+} from "@/lib/compose";
 import { DEMO_EXAMPLES } from "@/lib/demo-data";
+import { recordActivity } from "@/lib/streak";
 import type {
   Candidate,
   ComposeResult,
@@ -11,9 +17,14 @@ import type {
   Tone,
 } from "@/lib/types";
 import { IntentForm } from "./IntentForm";
-import { CandidateCard, CandidateSkeleton } from "./CandidateCard";
+import {
+  CandidateCard,
+  CandidateSkeleton,
+  type ReviewRequestState,
+} from "./CandidateCard";
 import { MeaningCheck, type VerifyState } from "./MeaningCheck";
 import { DraftTray, joinDraft } from "./DraftTray";
+import { StreakPill } from "./StreakPill";
 
 type Status = "idle" | "loading" | "ready" | "error";
 
@@ -30,6 +41,7 @@ export function Composer() {
   const [note, setNote] = useState<string | undefined>();
   const [selected, setSelected] = useState<number | null>(null);
   const [checks, setChecks] = useState<Record<string, VerifyState>>({});
+  const [reviews, setReviews] = useState<Record<string, ReviewRequestState>>({});
 
   const [draft, setDraft] = useState<string[]>([]);
   const [copied, setCopied] = useState(false);
@@ -45,6 +57,7 @@ export function Composer() {
     setSelected(null);
     setNote(undefined);
     setChecks({});
+    setReviews({});
     try {
       const res = await composeMessage({
         intent: intent.trim(),
@@ -103,6 +116,21 @@ export function Composer() {
     if (!existing || existing.status === "error") void runCheck(candidate, result);
   }
 
+  async function requestReview(candidate: Candidate, current: ComposeResult) {
+    const key = candidate.chinese;
+    setReviews((r) => ({ ...r, [key]: "sending" }));
+    try {
+      const outcome = await requestHumanCheck(candidate, current);
+      setReviews((r) => ({
+        ...r,
+        [key]: outcome === "already_verified" ? "verified" : "sent",
+      }));
+      if (outcome === "queued") recordActivity();
+    } catch {
+      setReviews((r) => ({ ...r, [key]: "error" }));
+    }
+  }
+
   function addToDraft(line: string) {
     if (draft.includes(line)) return;
     setDraft([...draft, line]);
@@ -123,6 +151,7 @@ export function Composer() {
       ta.remove();
     }
     setCopied(true);
+    recordActivity();
     setTimeout(() => setCopied(false), 2000);
   }
 
@@ -151,7 +180,10 @@ export function Composer() {
             whether a real person has checked it.
           </p>
         </div>
-        {source && <ModeBadge source={source} />}
+        <div className="flex flex-wrap items-center gap-2">
+          <StreakPill />
+          {source && <ModeBadge source={source} />}
+        </div>
       </header>
 
       <IntentForm
@@ -223,6 +255,14 @@ export function Composer() {
                   inDraft={draft.includes(c.chinese)}
                   onSelect={() => select(i)}
                   onAdd={() => addToDraft(c.chinese)}
+                  review={
+                    source === "live"
+                      ? {
+                          state: reviews[c.chinese] ?? "idle",
+                          onRequest: () => void requestReview(c, result),
+                        }
+                      : undefined
+                  }
                 />
               ))}
             </div>
