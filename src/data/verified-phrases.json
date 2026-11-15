@@ -1,119 +1,5 @@
 [
   {
-    "id": "thank-friend-natural",
-    "sourceLanguage": "en",
-    "targetLanguage": "zh-Hans",
-    "intent": "Thank a friend for helping, casually",
-    "keywords": [
-      "thank",
-      "thanks",
-      "help",
-      "homework",
-      "grateful"
-    ],
-    "relationship": "friend",
-    "tone": "casual",
-    "context": "Texting a friend after they helped with something small",
-    "region": "mainland",
-    "chinese": "作业的事多亏有你，太感谢了！",
-    "pinyin": "Zuò yè de shì duō kuī yǒu nǐ, tài gǎn xiè le!",
-    "english": "Couldn't have done the homework without you, thanks so much!",
-    "nuance": "Warm and natural. 多亏有你 is how friends give each other credit.",
-    "verification": {
-      "status": "pending",
-      "level": "native",
-      "verifiedBy": "",
-      "note": "",
-      "date": ""
-    }
-  },
-  {
-    "id": "meet-classmate-natural",
-    "sourceLanguage": "en",
-    "targetLanguage": "zh-Hans",
-    "intent": "Ask a classmate to study together tomorrow",
-    "keywords": [
-      "meet",
-      "study",
-      "tomorrow",
-      "review",
-      "together"
-    ],
-    "relationship": "classmate",
-    "tone": "friendly",
-    "context": "Before a test, asking a classmate to review together",
-    "region": "mainland",
-    "chinese": "明天有空吗？要不要一起复习？",
-    "pinyin": "Míng tiān yǒu kōng ma? Yào bu yào yì qǐ fù xí?",
-    "english": "Free tomorrow? Want to review together?",
-    "nuance": "Check availability first, then suggest. 复习 fits when a test is coming.",
-    "verification": {
-      "status": "pending",
-      "level": "native",
-      "verifiedBy": "",
-      "note": "",
-      "date": ""
-    }
-  },
-  {
-    "id": "dinner-family-fitted",
-    "sourceLanguage": "en",
-    "targetLanguage": "zh-Hans",
-    "intent": "Thank a host mother for a delicious dinner",
-    "keywords": [
-      "dinner",
-      "delicious",
-      "food",
-      "meal",
-      "cooking",
-      "host"
-    ],
-    "relationship": "family",
-    "tone": "appreciative",
-    "context": "Host family, speaking to the mother after dinner",
-    "region": "mainland",
-    "chinese": "阿姨，今天的菜太好吃了，谢谢您辛苦做饭！",
-    "pinyin": "Ā yí, jīn tiān de cài tài hǎo chī le, xiè xiè nín xīn kǔ zuò fàn!",
-    "english": "Auntie, the food today was amazing, thank you for cooking!",
-    "nuance": "您 and 辛苦 acknowledge her effort, which matters with elders.",
-    "verification": {
-      "status": "pending",
-      "level": "native",
-      "verifiedBy": "",
-      "note": "",
-      "date": ""
-    }
-  },
-  {
-    "id": "late-assignment-fitted",
-    "sourceLanguage": "en",
-    "targetLanguage": "zh-Hans",
-    "intent": "Apologize to a teacher for a late assignment",
-    "keywords": [
-      "sorry",
-      "apolog",
-      "late",
-      "assignment",
-      "homework",
-      "teacher"
-    ],
-    "relationship": "teacher",
-    "tone": "polite",
-    "context": "Messaging a teacher after missing a deadline",
-    "region": "mainland",
-    "chinese": "老师您好，很抱歉作业交晚了，给您添麻烦了，下次一定按时交。",
-    "pinyin": "Lǎo shī nín hǎo, hěn bào qiàn zuò yè jiāo wǎn le, gěi nín tiān má fán le, xià cì yí dìng àn shí jiāo.",
-    "english": "Hello teacher, I'm very sorry the assignment was late and for the trouble. I'll hand it in on time next time.",
-    "nuance": "抱歉, 您, 添麻烦 and a promise to do better: the shape of a respectful apology.",
-    "verification": {
-      "status": "pending",
-      "level": "native",
-      "verifiedBy": "",
-      "note": "",
-      "date": ""
-    }
-  },
-  {
     "id": "rev-1",
     "sourceLanguage": "en",
     "targetLanguage": "zh-Hans",
@@ -1341,6 +1227,37 @@
       "level": "native",
       "verifiedBy": "Yuwa He",
       "note": "Natural and polite enough for a host mother.",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-cc4bd048",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "Ask my host mom if I can invite a friend over for dinner on Saturday",
+    "keywords": [
+      "host",
+      "invite",
+      "friend",
+      "over",
+      "dinner",
+      "saturday",
+      "auntie",
+      "come"
+    ],
+    "relationship": "family",
+    "tone": "polite",
+    "context": "",
+    "region": "mainland",
+    "chinese": "阿姨，我可以邀请一个朋友周六来家里吃晚饭吗？",
+    "pinyin": "Ā yí, wǒ kě yǐ yāo qǐng yí gè péng yǒu zhōu liù lái jiā lǐ chī wǎn fàn ma?",
+    "english": "Auntie, may I invite a friend to come over for dinner on Saturday?",
+    "nuance": "Polite and clear; 阿姨 is the right address.",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "Polite and clear; 阿姨 is the right address.",
       "date": "2026-11-15"
     }
   }

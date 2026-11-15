@@ -33,7 +33,9 @@ export function cacheClear(prefix: string) {
 }
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
-const RATE_MAX = 30;
+// Per visitor IP. On a single demo laptop every request shares one IP, so the
+// default is generous; tighten with RATE_MAX when deployed publicly.
+const RATE_MAX = Number(process.env.RATE_MAX) || 60;
 const hits = new Map<string, number[]>();
 
 /** Returns true when the visitor may proceed. */

@@ -15,3 +15,13 @@ export function reviewerLevelFor(req: Request): ReviewerLevel | null {
 export function reviewerConfigured(): boolean {
   return Boolean(process.env.REVIEWER_CODE?.trim());
 }
+
+/** The official checker's name is fixed in the environment, not typed. */
+export function officialReviewerName(): string | null {
+  return process.env.REVIEWER_NAME?.trim() || null;
+}
+
+export function resolveReviewerName(level: ReviewerLevel, submitted: string): string {
+  if (level === "native") return officialReviewerName() ?? submitted;
+  return submitted;
+}

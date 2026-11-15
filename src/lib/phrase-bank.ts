@@ -16,7 +16,9 @@ export async function verifiedPhrases(): Promise<VerifiedPhrase[]> {
 
 /**
  * Finds the best verified phrase for a request, or null.
- * Needs at least two keyword hits, or one hit plus matching relationship.
+ * Deliberately strict: same relationship and at least two keyword hits, so an
+ * approved line is only reused in the kind of situation it was approved for.
+ * The model still decides whether it fits the exact intent.
  */
 export async function findVerifiedMatch(
   req: ComposeRequest,
@@ -25,12 +27,11 @@ export async function findVerifiedMatch(
   let best: VerifiedPhrase | null = null;
   let bestScore = 0;
   for (const p of await verifiedPhrases()) {
+    if (p.relationship !== req.relationship) continue;
     const hits = p.keywords.filter((k) => text.includes(k.toLowerCase())).length;
-    if (hits === 0) continue;
-    const relMatch = p.relationship === req.relationship;
+    if (hits < 2) continue;
     const toneMatch = p.tone === req.tone;
-    if (hits < 2 && !relMatch) continue;
-    const score = hits * 2 + (relMatch ? 2 : 0) + (toneMatch ? 1 : 0);
+    const score = hits * 2 + (toneMatch ? 1 : 0);
     if (score > bestScore) {
       best = p;
       bestScore = score;

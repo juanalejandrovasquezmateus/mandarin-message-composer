@@ -1,6 +1,6 @@
 # PROJECT_STATE — Mandarin Message Composer & Meaning Coach
 
-Last updated: 2026-11-15 (Phase 3 core done: reviewer desk, request-a-check, streak, library pinyin)
+Last updated: 2026-11-15 (Phase 4 milestone A: production build, hardening, demo runbook)
 
 ## What it is
 A responsive web app for English-speaking beginner Mandarin learners. The user types
@@ -81,13 +81,22 @@ streaks, growing bank) lives in the pitch; the hackathon build is the slice belo
       verbatim restore of approved lines. Full loop tested from the browser:
       request -> approve on /review -> recompose shows the green badge.
 
+- [x] Phase 4A: `npm run build` passes (Google Fonts dependency removed; system fonts
+      only, so the build and demo work on restricted Wi-Fi). Hardening from Grok's
+      review: keep AND fix are AI-screened; two explicit confirmations before approving;
+      the official reviewer's name is bound to the code (`REVIEWER_NAME`), not typed;
+      approved lines are reused only for the same relationship with >= 2 keyword hits;
+      screening prompt treats all texts as data. Cached requests no longer count toward
+      the rate limit (default 60 / 10 min, `RATE_MAX`). Four unreviewed seed lines
+      removed. `scripts/prewarm.mjs` and `DEMO.md` added. Desk checked at phone width.
+
 ## Outstanding
-- Phase 3 polish: visual pass (mobile check of /review), second-language toggle is
-  still out of scope, drop the 4 developer-written `pending` seed entries or get them
-  reviewed.
-- Phase 4: scenario testing, deployment decision (file-backed bank needs a writable
-  host or a small hosted store; a laptop demo over local Wi-Fi works as is), demo
-  script, bug fixes.
+- Phase 4B: full rehearsal with the reviewer on a phone over local Wi-Fi; decide on a
+  public deploy (needs a writable host or a small hosted store for the bank; not
+  required for a laptop demo); slides for the vision; final bug pass.
+- Roadmap (not for the hackathon): individual revocable reviewer links instead of a
+  shared code; highlight numbers/dates/negation changes for the reviewer; second
+  language direction; hosted store.
 - Bank matching is keyword-based and crude; watch for false matches on short intents.
 - Spanish bank (`verified-phrases-es.json`) is data only; no UI reads it yet.
 
@@ -110,7 +119,9 @@ streaks, growing bank) lives in the pitch; the hackathon build is the slice belo
 npm install
 npm run dev
 ```
-Open http://localhost:3000. Checks: `npx tsc --noEmit` and `npm run lint`.
+Open http://localhost:3000. Checks: `npx tsc --noEmit`, `npm run lint`, `npm run build`.
+For the demo use `npm run build` then `npm start`, then `node scripts/prewarm.mjs`
+(see DEMO.md).
 
 Review workflow (bulk): reviewers fill `decision` (keep/fix/reject), `*_fixed`,
 `reviewer_note` and `reviewer_name` in `review/phrases-to-review.csv` (Chinese) or

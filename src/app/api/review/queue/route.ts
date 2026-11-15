@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { readBank, readQueue } from "@/lib/server/bank-store";
-import { reviewerConfigured, reviewerLevelFor } from "@/lib/server/reviewer-auth";
+import {
+  officialReviewerName,
+  reviewerConfigured,
+  reviewerLevelFor,
+} from "@/lib/server/reviewer-auth";
 
 /** Reviewer loads the queue. Needs the x-reviewer-code header. */
 export async function GET(req: Request) {
@@ -12,5 +16,10 @@ export async function GET(req: Request) {
 
   const [items, bank] = await Promise.all([readQueue(), readBank()]);
   const verifiedCount = bank.filter((b) => b.verification.status === "verified").length;
-  return NextResponse.json({ level, items, verifiedCount });
+  return NextResponse.json({
+    level,
+    items,
+    verifiedCount,
+    officialName: level === "native" ? officialReviewerName() : null,
+  });
 }

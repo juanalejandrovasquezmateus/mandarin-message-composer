@@ -5,10 +5,17 @@ import { hasProvider, providerErrorReason, screenEdit } from "@/lib/server/ai";
 import { appendToBank, readQueue, removeFromQueue } from "@/lib/server/bank-store";
 import { cacheClear } from "@/lib/server/limits";
 import { toPinyin } from "@/lib/server/pinyin";
-import { reviewerConfigured, reviewerLevelFor } from "@/lib/server/reviewer-auth";
+import {
+  resolveReviewerName,
+  reviewerConfigured,
+  reviewerLevelFor,
+} from "@/lib/server/reviewer-auth";
 import type { VerifiedPhrase } from "@/lib/types";
 
-/** Reviewer decides on a queued line: keep, fix (AI-screened) or reject. */
+/**
+ * Reviewer decides on a queued line: keep, fix or reject.
+ * Both keep and fix pass the AI screen before entering the bank.
+ */
 export async function POST(req: Request) {
   if (!reviewerConfigured()) {
     return NextResponse.json({ error: "not_configured" }, { status: 503 });
@@ -31,32 +38,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ status: "rejected" });
   }
 
-  let chinese = item.chinese;
-  if (d.decision === "fix") {
-    const fixed = d.chineseFixed?.trim();
-    if (!fixed) return NextResponse.json({ error: "bad_request" }, { status: 400 });
-    if (!hasProvider()) {
-      return NextResponse.json({ error: "no_provider" }, { status: 503 });
+  const chinese = d.decision === "fix" ? (d.chineseFixed?.trim() ?? "") : item.chinese;
+  if (!chinese) return NextResponse.json({ error: "bad_request" }, { status: 400 });
+
+  if (!hasProvider()) {
+    return NextResponse.json({ error: "no_provider" }, { status: 503 });
+  }
+  try {
+    const verdict = await screenEdit({
+      original: item.chinese,
+      fixed: chinese,
+      intent: item.intent,
+      english: item.english,
+    });
+    if (!verdict.ok) {
+      return NextResponse.json(
+        { error: "screen_failed", reason: verdict.reason },
+        { status: 422 },
+      );
     }
-    try {
-      const verdict = await screenEdit({
-        original: item.chinese,
-        fixed,
-        intent: item.intent,
-        english: item.english,
-      });
-      if (!verdict.ok) {
-        return NextResponse.json(
-          { error: "screen_failed", reason: verdict.reason },
-          { status: 422 },
-        );
-      }
-    } catch (err) {
-      const { status, reason } = providerErrorReason(err);
-      console.error("[review/decide] screen failure:", reason);
-      return NextResponse.json({ error: reason }, { status });
-    }
-    chinese = fixed;
+  } catch (err) {
+    const { status, reason } = providerErrorReason(err);
+    console.error("[review/decide] screen failure:", reason);
+    return NextResponse.json({ error: reason }, { status });
   }
 
   const entry: VerifiedPhrase = {
@@ -76,7 +80,7 @@ export async function POST(req: Request) {
     verification: {
       status: "verified",
       level,
-      verifiedBy: d.reviewerName,
+      verifiedBy: resolveReviewerName(level, d.reviewerName),
       note: d.note ?? "",
       date: new Date().toISOString().slice(0, 10),
     },

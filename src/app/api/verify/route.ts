@@ -16,10 +16,6 @@ export async function POST(req: Request) {
   }
   const request = parsed.data;
 
-  if (!allowRequest(clientIp(req))) {
-    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
-  }
-
   const key =
     "verify:" +
     JSON.stringify([
@@ -30,6 +26,10 @@ export async function POST(req: Request) {
     ]);
   const cached = cacheGet<VerifyResult>(key);
   if (cached) return NextResponse.json({ result: cached, cached: true });
+
+  if (!allowRequest(clientIp(req))) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
   try {
     const result = await verifyCandidate(request);

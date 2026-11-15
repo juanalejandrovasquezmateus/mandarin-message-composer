@@ -1,11 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// Fonts are system fonts on purpose: no network dependency at build or run
+// time, which keeps the build and the demo working on restricted Wi-Fi.
 
 export const metadata: Metadata = {
   title: "Mandarin Message Composer",
@@ -23,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -18,10 +18,6 @@ export async function POST(req: Request) {
   }
   const request = parsed.data;
 
-  if (!allowRequest(clientIp(req))) {
-    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
-  }
-
   const key =
     "compose:" +
     JSON.stringify([
@@ -30,8 +26,13 @@ export async function POST(req: Request) {
       request.tone,
       (request.context ?? "").toLowerCase(),
     ]);
+  // Cached answers are free, so they don't count against the visitor's limit.
   const cached = cacheGet<ComposeResult>(key);
   if (cached) return NextResponse.json({ result: cached, cached: true });
+
+  if (!allowRequest(clientIp(req))) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
 
   const verified = await findVerifiedMatch(request);
 

@@ -23,7 +23,13 @@ type Queue =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "error"; message: string }
-  | { status: "ready"; level: ReviewerLevel; items: ReviewRequestItem[]; verifiedCount: number };
+  | {
+      status: "ready";
+      level: ReviewerLevel;
+      items: ReviewRequestItem[];
+      verifiedCount: number;
+      officialName: string | null;
+    };
 
 export function ReviewDesk() {
   const [code, setCode] = useState("");
@@ -50,6 +56,7 @@ export function ReviewDesk() {
         level: ReviewerLevel;
         items: ReviewRequestItem[];
         verifiedCount: number;
+        officialName: string | null;
       };
       setQueue({ status: "ready", ...data });
     } catch {
@@ -63,7 +70,7 @@ export function ReviewDesk() {
         ? {
             ...q,
             items: q.items.filter((i) => i.id !== id),
-            verifiedCount: q.verifiedCount + (message.startsWith("Added") ? 1 : 0),
+            verifiedCount: q.verifiedCount + (/added to the bank/i.test(message) ? 1 : 0),
           }
         : q,
     );
@@ -123,7 +130,9 @@ export function ReviewDesk() {
         )}
         {queue.status === "ready" && (
           <p className="mt-3 text-xs text-muted">
-            Signed in as {name.trim()} ({queue.level === "native" ? "official native checker" : "community reviewer"}).
+            Approving as{" "}
+            <span className="font-medium text-ink">{queue.officialName ?? name.trim()}</span>{" "}
+            ({queue.level === "native" ? "official native checker" : "community reviewer"}).
             Bank: {queue.verifiedCount} verified lines. Waiting: {queue.items.length}.
           </p>
         )}
@@ -174,6 +183,10 @@ function ReviewItem({
   const [region, setRegion] = useState<Region>(item.region);
   const [busy, setBusy] = useState<ReviewDecision | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Two separate confirmations before anything enters the bank.
+  const [natural, setNatural] = useState(false);
+  const [meaning, setMeaning] = useState(false);
+  const confirmed = natural && meaning;
 
   const relLabel = RELATIONSHIPS.find((r) => r.id === item.relationship)?.label ?? item.relationship;
   const badgeText = level === "native" ? "checked by a native speaker" : "checked by a community member";
@@ -197,20 +210,23 @@ function ReviewItem({
       });
       const data = (await r.json().catch(() => ({}))) as { error?: string; reason?: string };
       if (r.status === 422) {
-        setError(`The AI screen flagged this edit: ${data.reason ?? "unspecified"}. Adjust it or reject the line.`);
+        const reason = (data.reason ?? "unspecified").replace(/[.。]\s*$/, "");
+        setError(`The AI screen flagged this line: ${reason}. Adjust it or reject the line.`);
         return;
       }
       if (!r.ok) {
         setError(
           data.error === "no_provider"
-            ? "Fixes need the AI screen, and no AI key is configured."
+            ? "Approvals pass through the AI screen, and no AI key is configured."
             : "Couldn't save that decision. Try again.",
         );
         return;
       }
       onDone(
         item.id,
-        decision === "reject" ? "Rejected and removed from the queue." : `Added to the bank as ${badgeText}.`,
+        decision === "reject"
+          ? "Rejected and removed from the queue."
+          : `Screened and added to the bank as ${badgeText}.`,
       );
     } catch {
       setError("Couldn't reach the server.");
@@ -286,6 +302,20 @@ function ReviewItem({
         </label>
       </div>
 
+      <fieldset className="mt-4 space-y-1.5 text-sm">
+        <legend className="text-xs font-medium uppercase tracking-wide text-muted">
+          Confirm before approving
+        </legend>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={natural} onChange={(e) => setNatural(e.target.checked)} />
+          A native speaker would really text this{fixing ? " (as edited)" : ""}.
+        </label>
+        <label className="flex items-center gap-2">
+          <input type="checkbox" checked={meaning} onChange={(e) => setMeaning(e.target.checked)} />
+          It means what the user meant, for this person and tone.
+        </label>
+      </fieldset>
+
       {error && <p role="alert" className="mt-3 text-sm text-accent-deep">{error}</p>}
 
       <div className="mt-4 flex flex-wrap gap-2">
@@ -294,10 +324,10 @@ function ReviewItem({
             <button
               type="button"
               onClick={() => decide("keep")}
-              disabled={busy !== null}
+              disabled={busy !== null || !confirmed}
               className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
             >
-              {busy === "keep" ? "Saving…" : "Keep as is"}
+              {busy === "keep" ? "Screening and saving…" : "Keep as is"}
             </button>
             <button
               type="button"
@@ -313,7 +343,7 @@ function ReviewItem({
             <button
               type="button"
               onClick={() => decide("fix")}
-              disabled={busy !== null || fixed.trim().length === 0}
+              disabled={busy !== null || fixed.trim().length === 0 || !confirmed}
               className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
             >
               {busy === "fix" ? "Screening and saving…" : "Approve with fix"}
