@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CONTEXT_MAX_CHARS,
   INTENT_MAX_CHARS,
   RELATIONSHIPS,
   TONES,
@@ -12,11 +13,13 @@ interface Props {
   intent: string;
   relationship: Relationship;
   tone: Tone;
+  context: string;
   loading: boolean;
   examples: { intent: string; relationship: Relationship; tone: Tone }[];
   onIntentChange: (v: string) => void;
   onRelationshipChange: (v: Relationship) => void;
   onToneChange: (v: Tone) => void;
+  onContextChange: (v: string) => void;
   onPickExample: (ex: { intent: string; relationship: Relationship; tone: Tone }) => void;
   onSubmit: () => void;
 }
@@ -95,6 +98,21 @@ export function IntentForm(p: Props) {
           options={TONES}
           value={p.tone}
           onChange={(v) => p.onToneChange(v as Tone)}
+        />
+      </div>
+
+      <div className="mt-5">
+        <label htmlFor="context" className="text-xs font-medium uppercase tracking-wide text-muted">
+          Anything else worth knowing? <span className="normal-case">(optional)</span>
+        </label>
+        <input
+          id="context"
+          type="text"
+          value={p.context}
+          maxLength={CONTEXT_MAX_CHARS}
+          onChange={(e) => p.onContextChange(e.target.value)}
+          placeholder="e.g. she's my host mom and speaks no English"
+          className="mt-2 w-full rounded-xl border border-line bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-muted/70 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
         />
       </div>
 

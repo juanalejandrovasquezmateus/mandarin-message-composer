@@ -1,6 +1,7 @@
 "use client";
 
 import { CANDIDATE_LABELS, type Candidate } from "@/lib/types";
+import { ProvenanceBadge } from "./ProvenanceBadge";
 
 interface Props {
   candidate: Candidate;
@@ -47,6 +48,12 @@ export function CandidateCard({
       <p className="mt-2 border-l-2 border-line pl-3 text-sm leading-relaxed text-muted">
         {candidate.nuance}
       </p>
+      <div className="mt-3">
+        <ProvenanceBadge
+          provenance={candidate.provenance}
+          note={candidate.verifierNote}
+        />
+      </div>
 
       <footer className="mt-4 flex flex-wrap gap-2">
         <button

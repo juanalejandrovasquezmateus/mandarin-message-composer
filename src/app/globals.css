@@ -13,6 +13,10 @@
   --color-accent-soft: #fbeae5;
   --color-ok: #2f6b4f;
   --color-ok-soft: #e6f2ec;
+  --color-info: #2b5f8a;
+  --color-info-soft: #e7eff7;
+  --color-warn: #8a6d1f;
+  --color-warn-soft: #f6efd9;
 
   --font-hanzi:
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",

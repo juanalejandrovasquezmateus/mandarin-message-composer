@@ -1,0 +1,58 @@
+// Zod schemas: validate what the browser sends and what the model returns.
+import { z } from "zod";
+import { CONTEXT_MAX_CHARS, INTENT_MAX_CHARS } from "./types";
+
+export const relationshipSchema = z.enum([
+  "friend",
+  "classmate",
+  "family",
+  "teacher",
+]);
+export const toneSchema = z.enum(["casual", "friendly", "polite", "appreciative"]);
+
+export const composeRequestSchema = z.object({
+  intent: z.string().trim().min(3).max(INTENT_MAX_CHARS),
+  relationship: relationshipSchema,
+  tone: toneSchema,
+  context: z.string().trim().max(CONTEXT_MAX_CHARS).optional(),
+});
+
+export const verifyRequestSchema = z.object({
+  chinese: z.string().trim().min(1).max(200),
+  intent: z.string().trim().min(3).max(INTENT_MAX_CHARS),
+  relationship: relationshipSchema,
+  tone: toneSchema,
+});
+
+// --- Model output shapes -------------------------------------------------
+
+const vocabSchema = z.object({
+  word: z.string(),
+  pinyin: z.string(),
+  meaning: z.string(),
+});
+
+const modelCandidateSchema = z.object({
+  label: z.enum(["direct", "natural", "fitted"]),
+  chinese: z.string(),
+  pinyin: z.string(),
+  english: z.string(),
+  nuance: z.string(),
+  vocab: z.array(vocabSchema),
+  /** True when the model changed a verified phrase we gave it. */
+  adaptedFromVerified: z.boolean(),
+});
+
+export const modelComposeSchema = z.object({
+  candidates: z.array(modelCandidateSchema),
+});
+export type ModelCompose = z.infer<typeof modelComposeSchema>;
+
+export const literalSchema = z.object({
+  literalMeaning: z.string(),
+  register: z.enum(["casual", "neutral", "polite", "formal"]),
+});
+
+export const gapSchema = z.object({
+  gap: z.string(),
+});

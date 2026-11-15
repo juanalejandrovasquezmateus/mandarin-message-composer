@@ -1,0 +1,135 @@
+// Server-only: all calls to the AI provider live here. The API key is read
+// from the environment and never reaches the browser.
+import Anthropic from "@anthropic-ai/sdk";
+import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import type { VerifiedPhrase } from "../phrase-bank";
+import { gapSchema, literalSchema, modelComposeSchema, type ModelCompose } from "../schemas";
+import type { ComposeRequest, VerifyRequest, VerifyResult } from "../types";
+
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
+
+export function hasProvider(): boolean {
+  return Boolean(process.env.ANTHROPIC_API_KEY);
+}
+
+let client: Anthropic | null = null;
+function getClient() {
+  if (!client) client = new Anthropic({ timeout: 60_000, maxRetries: 1 });
+  return client;
+}
+
+export class ProviderRefusal extends Error {}
+
+const COMPOSE_SYSTEM = `You help English-speaking beginners say things naturally in Simplified Chinese, in everyday mainland texting style.
+
+You receive what the user wants to say (in English), who the message is for, the tone they want, and sometimes extra context. Produce exactly three candidate messages:
+- "direct": a faithful, grammatical rendering close to the English.
+- "natural": how a native speaker would actually text this.
+- "fitted": adapted to the relationship and tone. It may add a natural touch, but must not invent commitments, facts or promises the user did not express; if you add any softening phrase, say so in the nuance note.
+The three must differ in a meaningful way (wording, register or structure), not be three near-copies.
+
+Rules:
+- Simplified characters only. Output only the message text itself, no quotes, no explanations inside "chinese".
+- "pinyin": Hanyu Pinyin with tone marks, one space between words, keep sentence punctuation.
+- "english": the natural English meaning of that Chinese line.
+- "nuance": one or two sentences on how the line sounds to a native speaker. Mention the key Chinese phrase with a short gloss in parentheses.
+- "vocab": two to four key words or set phrases from the line, each with pinyin and a short meaning.
+- Keep lines short enough to text; prefer under 40 characters unless the tone needs more.
+
+If a NATIVE-SPEAKER-VERIFIED phrase is provided: use it verbatim as the "natural" candidate when it fits the user's exact intent, and set adaptedFromVerified to false. If it needs small changes to fit (names, details, tense), adapt it and set adaptedFromVerified to true. If it does not fit, ignore it and set adaptedFromVerified to false everywhere.
+Set adaptedFromVerified to false on candidates that do not derive from the verified phrase.`;
+
+function composeUserMessage(req: ComposeRequest, verified: VerifiedPhrase | null) {
+  const lines = [
+    `Intent (English): ${req.intent}`,
+    `Message is for: ${req.relationship}`,
+    `Desired tone: ${req.tone}`,
+  ];
+  if (req.context) lines.push(`Extra context: ${req.context}`);
+  if (verified) {
+    lines.push(
+      "",
+      "NATIVE-SPEAKER-VERIFIED phrase for a similar situation:",
+      `Chinese: ${verified.chinese}`,
+      `Meaning: ${verified.english}`,
+      `Situation: ${verified.intent} (for: ${verified.relationship}, tone: ${verified.tone})`,
+    );
+  }
+  return lines.join("\n");
+}
+
+export async function generateCandidates(
+  req: ComposeRequest,
+  verified: VerifiedPhrase | null,
+): Promise<ModelCompose> {
+  const res = await getClient().messages.parse({
+    model: MODEL,
+    max_tokens: 16000,
+    system: COMPOSE_SYSTEM,
+    output_config: { effort: "medium", format: zodOutputFormat(modelComposeSchema) },
+    messages: [{ role: "user", content: composeUserMessage(req, verified) }],
+  });
+  if (res.stop_reason === "refusal") throw new ProviderRefusal("refused");
+  if (!res.parsed_output) throw new Error("Model output did not match the schema");
+  return res.parsed_output;
+}
+
+const LITERAL_SYSTEM = `You are a literal translator. You will see ONE Chinese message and nothing else about who wrote it or why.
+Translate it literally into English so that a beginner can see exactly what each part says. Keep particles and politeness markers visible, e.g. "(respectful you)", "(softener)". Do not improve or interpret it.
+Also classify its register as one of: casual, neutral, polite, formal.`;
+
+const GAP_SYSTEM = `You compare what someone meant to say (in English) with a Chinese message and its literal back-translation.
+Write ONE short sentence, for a beginner, describing anything the Chinese adds, drops or shifts compared with the intent, including tone mismatches for the stated relationship. If there is no meaningful difference, output exactly: none`;
+
+export async function verifyCandidate(req: VerifyRequest): Promise<VerifyResult> {
+  const client = getClient();
+
+  // Step 1 is blind: the model sees only the Chinese line.
+  const literal = await client.messages.parse({
+    model: MODEL,
+    max_tokens: 4000,
+    system: LITERAL_SYSTEM,
+    output_config: { effort: "low", format: zodOutputFormat(literalSchema) },
+    messages: [{ role: "user", content: req.chinese }],
+  });
+  if (literal.stop_reason === "refusal") throw new ProviderRefusal("refused");
+  if (!literal.parsed_output) throw new Error("Literal output did not match the schema");
+
+  // Step 2 compares the blind reading with the original intent.
+  const gap = await client.messages.parse({
+    model: MODEL,
+    max_tokens: 4000,
+    system: GAP_SYSTEM,
+    output_config: { effort: "low", format: zodOutputFormat(gapSchema) },
+    messages: [
+      {
+        role: "user",
+        content: [
+          `Intent (English): ${req.intent}`,
+          `Message is for: ${req.relationship}; desired tone: ${req.tone}`,
+          `Chinese: ${req.chinese}`,
+          `Literal back-translation: ${literal.parsed_output.literalMeaning}`,
+          `Register detected: ${literal.parsed_output.register}`,
+        ].join("\n"),
+      },
+    ],
+  });
+  if (gap.stop_reason === "refusal") throw new ProviderRefusal("refused");
+  if (!gap.parsed_output) throw new Error("Gap output did not match the schema");
+
+  return {
+    literalMeaning: literal.parsed_output.literalMeaning,
+    register: literal.parsed_output.register,
+    gap: gap.parsed_output.gap.trim(),
+  };
+}
+
+/** Maps provider errors to a short machine-readable reason for the client. */
+export function providerErrorReason(err: unknown): { status: number; reason: string } {
+  if (err instanceof ProviderRefusal) return { status: 502, reason: "refused" };
+  if (err instanceof Anthropic.AuthenticationError) return { status: 503, reason: "bad_key" };
+  if (err instanceof Anthropic.RateLimitError) return { status: 503, reason: "provider_busy" };
+  if (err instanceof Anthropic.APIConnectionError) return { status: 503, reason: "unreachable" };
+  if (err instanceof Anthropic.APIError) return { status: 502, reason: "provider_error" };
+  return { status: 500, reason: "unknown" };
+}

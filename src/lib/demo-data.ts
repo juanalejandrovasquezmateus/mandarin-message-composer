@@ -2,9 +2,15 @@
 // configured or the provider fails. They are never presented as live output.
 // Pinyin here is hand-written; Phase 3 replaces it with a generated version.
 
-import type { ComposeRequest, ComposeResult } from "./types";
+import type { Candidate, ComposeRequest, ComposeResult } from "./types";
 
-export const DEMO_EXAMPLES: (ComposeResult & { keywords: string[] })[] = [
+interface DemoExample extends ComposeRequest {
+  id: string;
+  keywords: string[];
+  candidates: Omit<Candidate, "provenance">[];
+}
+
+export const DEMO_EXAMPLES: DemoExample[] = [
   {
     id: "thank-friend",
     intent:
@@ -252,7 +258,15 @@ export function matchDemo(req: ComposeRequest): {
       bestScore = score;
     }
   }
-  const { keywords: _unused, ...result } = best;
-  void _unused;
+  const result: ComposeResult = {
+    id: best.id,
+    intent: best.intent,
+    relationship: best.relationship,
+    tone: best.tone,
+    sourceLanguage: "en",
+    targetLanguage: "zh-Hans",
+    // Hand-written by the developers with AI help; no native speaker has checked them.
+    candidates: best.candidates.map((c) => ({ ...c, provenance: "ai-generated" })),
+  };
   return { result, matched: bestScore >= 1 };
 }

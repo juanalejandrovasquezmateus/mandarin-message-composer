@@ -1,6 +1,6 @@
 # PROJECT_STATE — Mandarin Message Composer & Meaning Coach
 
-Last updated: 2026-11-15 (end of Phase 1)
+Last updated: 2026-11-15 (Phase 2, milestone A: live AI wiring, awaiting key)
 
 ## What it is
 A responsive web app for English-speaking beginner Mandarin learners. The user types
@@ -9,17 +9,40 @@ three labelled Chinese candidates (Direct / Natural / Fitted to tone) with chara
 pinyin, English and a nuance note. They can run a meaning check on a candidate, add
 lines to a draft and copy the final Chinese text.
 
+## Positioning (decided 2026-11-15)
+"AI drafts it. A real Chinese speaker signed off on it. You always know which is which."
+Every line carries a provenance label: checked by a native speaker / checked by a
+community member / AI-adapted from a checked phrase / AI-generated, not yet checked.
+Labels must always be literally true. The long-term vision (two-way language exchange,
+streaks, growing bank) lives in the pitch; the hackathon build is the slice below.
+
 ## Architecture
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS 4. Node 26, npm 11.
+  Dependencies beyond the scaffold: `@anthropic-ai/sdk`, `zod`.
 - Single page: `src/app/page.tsx` renders `src/components/Composer.tsx` (all state).
-- `src/lib/types.ts` — shared data shapes (ComposeRequest, ComposeResult, Candidate).
+- `src/lib/types.ts` — shared shapes (ComposeRequest/Result, Candidate, Provenance, VerifyResult).
+- `src/lib/schemas.ts` — Zod schemas for request validation and model output.
 - `src/lib/demo-data.ts` — hand-written Demo Mode examples + `matchDemo()`.
-- `src/lib/compose.ts` — `composeMessage()`; Phase 1 returns Demo Mode data only.
-  Phase 2 will call a server route (`src/app/api/compose/route.ts`) that holds the API key.
-- Components: `IntentForm`, `CandidateCard` (+ skeleton), `MeaningCheck`, `DraftTray`.
-- Design tokens live in `src/app/globals.css` (`@theme`): paper background, ink text,
-  one cinnabar accent. Chinese text uses the system CJK font stack via `lang="zh-Hans"`.
-- No database, no auth, no analytics. The draft is kept in memory only (nothing stored).
+- `src/data/verified-phrases.json` + `src/lib/phrase-bank.ts` — the verified phrase bank
+  (tone, context, region, verification status/level/note). Only `status: "verified"`
+  entries are ever matched; `provenanceFor()` decides the label for each candidate.
+- `src/lib/server/ai.ts` — all provider calls (server only). `generateCandidates()` uses
+  structured output; `verifyCandidate()` is a two-step blind check: step 1 sees only the
+  Chinese (literal meaning + register), step 2 compares with the intent (gap).
+- `src/lib/server/limits.ts` — in-memory cache (300 entries, 24h) and per-IP limit
+  (30 requests / 10 min). Resets when the server process restarts.
+- Routes: `src/app/api/compose/route.ts`, `src/app/api/verify/route.ts`. Both return 503
+  `no_provider` when `ANTHROPIC_API_KEY` is unset; the browser then falls back to Demo
+  Mode with a visible note naming the reason.
+- `src/lib/compose.ts` — browser side: calls the routes, falls back to Demo Mode,
+  surfaces rate-limit/validation errors to the user instead of hiding them.
+- Components: `IntentForm` (intent, chips, optional context), `CandidateCard` (+ skeleton,
+  `ProvenanceBadge`), `MeaningCheck` (loading/error/ready, register meter), `DraftTray`.
+- Design tokens in `src/app/globals.css` (`@theme`). Chinese uses the system CJK stack.
+- No database, no auth, no analytics. Draft kept in memory only. Server logs failure
+  types only, never message content.
+- Env: `.env.local` (ignored by Git) holds `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL`
+  (default `claude-opus-5-5`). `.env.example` documents them.
 
 ## Completed
 - [x] Phase 0: evaluation, competitor research, provider comparison (in chat, 2026-11-15).
@@ -27,15 +50,21 @@ lines to a draft and copy the final Chinese text.
       loading / empty / error states, responsive layout, type-check and lint clean,
       manual browser test of the whole flow (compose → check meaning → add → copy).
 
+- [x] Phase 2A: compose + verify routes, structured output, blind two-step meaning
+      check, cache, rate limit, Demo Mode fallback with reasons, provenance labels,
+      phrase bank with matching, optional context field, register meter. Tested only
+      on the no-key path (no API key available yet).
+
 ## Outstanding
-- Phase 2: `/api/compose` route with the Anthropic SDK, structured JSON output,
-  blind back-translation meaning check, server cache, input limits, rate limit,
-  automatic fallback to Demo Mode on failure, "Live AI" badge.
-- Phase 3: pinyin from `pinyin-pro` instead of the model, vocabulary polish,
-  native-speaker validation of at least 10 intents, visual polish.
+- Phase 2B: paste the API key, test live generation and live meaning check, measure
+  latency and tune `effort`; test a verified bank entry end to end.
+- Phase 3: reviewer page (shared reviewer code, keep/fix/reject with tone, context,
+  region), AI screening of edits, import script for the friend's reviewed CSV,
+  per-device streak, pinyin from `pinyin-pro`, visual polish. Hosted store only if the
+  live-approval demo is confirmed.
 - Phase 4: scenario testing, Vercel deploy, demo script, bug fixes.
-- Replace hand-written demo data with the ChatGPT-generated + Grok-reviewed set once
-  it is saved as `demo-data.json` and checked.
+- Content: ChatGPT generates ~40 common situations; the native-speaking friend reviews
+  them (CSV); import becomes the first real verified bank.
 
 ## Important decisions
 - AI provider: Anthropic API, default model `claude-opus-5-5`, model name in an env var
@@ -44,6 +73,12 @@ lines to a draft and copy the final Chinese text.
 - Generation happens only on button press (never per keystroke). Input capped at 300 chars.
 - Demo Mode is always labelled; mock output is never presented as live AI.
 - Draft is not persisted (privacy + simpler code).
+- Provider refusals are treated as an ordinary failure (Demo Mode fallback) rather than
+  wiring the server-side fallback option; the content here is everyday messaging.
+- The meaning check runs on demand per candidate (click), not for all three up front,
+  to save tokens and latency. Step 1 is blind by design; keep it that way.
+- One language direction (en -> zh-Hans) is built. `sourceLanguage`/`targetLanguage`
+  fields exist so Spanish can be added as configuration later.
 
 ## How to run
 ```bash
@@ -58,5 +93,9 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
 ## Known problems
 - Demo Mode only knows four intents; other inputs return the closest example with a
   visible note saying so.
-- Pinyin in demo data is hand-written and unverified by a native speaker.
-- No live AI yet; the "Live AI" badge exists in code but is never shown in Phase 1.
+- Pinyin (demo data and live) is model/hand-written and unverified; Phase 3 generates it.
+- Live path untested until a key is added. Latency with Opus 5.5 at medium effort is
+  unmeasured; expect several seconds per compose.
+- All four bank entries are `pending`, so no verified badge can appear yet.
+- Next.js 16: do not add `export const runtime` to route files (conflicts with
+  `cacheComponents`).
