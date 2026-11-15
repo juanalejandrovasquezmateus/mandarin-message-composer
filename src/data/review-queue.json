@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "253acb97-f27f-4d34-a95d-a4e8cca87698",
+    "chinese": "阿姨，今天的晚饭非常好吃。",
+    "pinyin": "Ā yí, jīn tiān de wǎn fàn fēi cháng hǎo chī.",
+    "english": "Auntie, today's dinner was really delicious.",
+    "intent": "Tell my host family's mom that dinner was delicious",
+    "relationship": "family",
+    "tone": "appreciative",
+    "region": "mainland",
+    "provenance": "ai-generated",
+    "submittedAt": "2026-11-15T21:54:33.504Z",
+    "targetLanguage": "zh-Hans"
+  }
+]

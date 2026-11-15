@@ -576,5 +576,32 @@
       "note": "for close friends",
       "date": "2026-11-15"
     }
+  },
+  {
+    "id": "q-98b21109",
+    "sourceLanguage": "en",
+    "targetLanguage": "es",
+    "intent": "Ask my classmate if I can borrow their notes from yesterday",
+    "keywords": [
+      "classmate",
+      "borrow",
+      "note",
+      "yesterday"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "",
+    "region": "other",
+    "chinese": "amigo, pasame tus apuntes, porfavor",
+    "pinyin": "",
+    "english": "Ask my classmate if I can borrow their notes from yesterday",
+    "nuance": "casual, for a close friend",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Juan Vasquez",
+      "note": "casual, for a close friend",
+      "date": "2026-11-15"
+    }
   }
 ]

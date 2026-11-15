@@ -31,5 +31,49 @@
     "verifiedBy": "Juan Vasquez",
     "note": "for close friends",
     "date": "2026-11-15"
+  },
+  {
+    "id": "621418b3-c92e-4a09-8353-6d941b4659bd",
+    "status": "approved",
+    "chinese": "老师，跟您说个事儿，我现在特别迷编程，越学越有意思😄",
+    "pinyin": "Lǎo shī, gēn nín shuō gè shì ér, wǒ xiàn zài tè bié mí biān chéng, yuè xué yuè yǒu yì sī 😄",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "casual, friendly, for a teacher you know very well",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "781da377-3433-42f7-bcef-60c282ee49ad",
+    "status": "approved",
+    "chinese": "老师，我真的特别爱编程！",
+    "pinyin": "Lǎo shī, wǒ zhēn de tè bié ài biān chéng!",
+    "changed": true,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "sounds too plain, and robotic",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "98b21109-3757-4556-9b3a-b9ca60667eb9",
+    "status": "approved",
+    "chinese": "amigo, pasame tus apuntes, porfavor",
+    "pinyin": "",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Juan Vasquez",
+    "note": "casual, for a close friend",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "d867300c-7351-4bb0-999c-fa983619a73d",
+    "status": "approved",
+    "chinese": "编程是我的最爱",
+    "pinyin": "Biān chéng shì wǒ de zuì ài",
+    "changed": true,
+    "level": "native",
+    "verifiedBy": "Yuwa He",
+    "note": "robitic",
+    "date": "2026-11-15"
   }
 ]

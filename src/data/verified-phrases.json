@@ -1344,5 +1344,88 @@
       "note": "",
       "date": "2026-11-15"
     }
+  },
+  {
+    "id": "q-621418b3",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "I want to tell my teacher i love programming",
+    "keywords": [
+      "tell",
+      "teacher",
+      "love",
+      "programm",
+      "want",
+      "more",
+      "learn",
+      "get"
+    ],
+    "relationship": "teacher",
+    "tone": "friendly",
+    "context": "a teacher i have known for 4 years",
+    "region": "mainland",
+    "chinese": "老师，跟您说个事儿，我现在特别迷编程，越学越有意思😄",
+    "pinyin": "Lǎo shī, gēn nín shuō gè shì ér, wǒ xiàn zài tè bié mí biān chéng, yuè xué yuè yǒu yì sī 😄",
+    "english": "Teacher, just wanted to tell you, I'm really into programming now, the more I learn the more fun it gets 😄",
+    "nuance": "casual, friendly, for a teacher you know very well",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "casual, friendly, for a teacher you know very well",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-781da377",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "I want to tell my teacher i love programming",
+    "keywords": [
+      "tell",
+      "teacher",
+      "love",
+      "programm"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "a teacher i have known for 4 years",
+    "region": "mainland",
+    "chinese": "老师，我真的特别爱编程！",
+    "pinyin": "Lǎo shī, wǒ zhēn de tè bié ài biān chéng!",
+    "english": "Teacher, I really like programming.",
+    "nuance": "sounds too plain, and robotic",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "sounds too plain, and robotic",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-d867300c",
+    "sourceLanguage": "en",
+    "targetLanguage": "zh-Hans",
+    "intent": "I really love programming",
+    "keywords": [
+      "love",
+      "programm"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "a teacher i have known for 4 years",
+    "region": "mainland",
+    "chinese": "编程是我的最爱",
+    "pinyin": "Biān chéng shì wǒ de zuì ài",
+    "english": "I really like programming a lot.",
+    "nuance": "robitic",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Yuwa He",
+      "note": "robitic",
+      "date": "2026-11-15"
+    }
   }
 ]

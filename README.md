@@ -124,3 +124,12 @@ Working end to end for Chinese and Spanish on a laptop with a native reviewer on
 Next: individual revocable reviewer links instead of a shared code, a hosted store so the
 bank survives a serverless deploy, highlighting numbers and negation changes for reviewers,
 and more languages, which are now configuration rather than new code.
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Home](docs/screenshots/01-home.png) | ![Cards with a native-checked line](docs/screenshots/02-cards-checked.png) |
+| ![Meaning check](docs/screenshots/03-meaning-check.png) | ![Spanish results](docs/screenshots/04-spanish.png) |
+| ![Give back](docs/screenshots/05-give-back.png) | ![Reviewer desk on a phone](docs/screenshots/06-reviewer-phone.png) |
+| ![Reviewer sign-in](docs/screenshots/07-reviewer-signin.png) | ![Streak tiers](docs/screenshots/08-streak-tiers.png) |
