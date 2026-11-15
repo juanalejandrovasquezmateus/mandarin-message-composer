@@ -1,6 +1,6 @@
 # PROJECT_STATE — Mandarin Message Composer & Meaning Coach
 
-Last updated: 2026-11-15 (Phase 2, milestone A: live AI wiring, awaiting key)
+Last updated: 2026-11-15 (end of Phase 2: live AI working, first verified banks imported)
 
 ## What it is
 A responsive web app for English-speaking beginner Mandarin learners. The user types
@@ -55,16 +55,19 @@ streaks, growing bank) lives in the pitch; the hackathon build is the slice belo
       phrase bank with matching, optional context field, register meter. Tested only
       on the no-key path (no API key available yet).
 
+- [x] Phase 2B: live generation and live meaning check tested with a real key.
+      Compose ~10 s at `effort: low` (17 s at medium, no visible quality gain), meaning
+      check ~8 s (two sequential calls). Review CSVs imported: 40 Chinese lines approved
+      by Yuwa He (native speaker), 15 Spanish lines approved by Juan Vasquez (Colombia).
+
 ## Outstanding
-- Phase 2B: paste the API key, test live generation and live meaning check, measure
-  latency and tune `effort`; test a verified bank entry end to end.
 - Phase 3: reviewer page (shared reviewer code, keep/fix/reject with tone, context,
-  region), AI screening of edits, import script for the friend's reviewed CSV,
-  per-device streak, pinyin from `pinyin-pro`, visual polish. Hosted store only if the
-  live-approval demo is confirmed.
+  region), AI screening of edits, per-device streak, pinyin from `pinyin-pro`
+  (also fills pinyin for any "fix" lines, which import leaves empty), visual polish.
+  Hosted store only if the live-approval demo is confirmed.
 - Phase 4: scenario testing, Vercel deploy, demo script, bug fixes.
-- Content: ChatGPT generates ~40 common situations; the native-speaking friend reviews
-  them (CSV); import becomes the first real verified bank.
+- Bank matching is keyword-based and crude; watch for false matches on short intents.
+- Spanish bank (`verified-phrases-es.json`) is data only; no UI reads it yet.
 
 ## Important decisions
 - AI provider: Anthropic API, default model `claude-opus-5-5`, model name in an env var
@@ -87,6 +90,11 @@ npm run dev
 ```
 Open http://localhost:3000. Checks: `npx tsc --noEmit` and `npm run lint`.
 
+Review workflow: reviewers fill `decision` (keep/fix/reject), `*_fixed`, `reviewer_note`
+and `reviewer_name` in `review/phrases-to-review.csv` (Chinese) or
+`review/spanish-to-review.csv` (Spanish), then run `npm run import:reviewed`.
+Only keep/fix rows become `verified`; everything else stays pending and never shows a badge.
+
 On this PC, Node and Git are installed but a freshly opened shell may need a restart to
 see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm path.
 
@@ -94,8 +102,9 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
 - Demo Mode only knows four intents; other inputs return the closest example with a
   visible note saying so.
 - Pinyin (demo data and live) is model/hand-written and unverified; Phase 3 generates it.
-- Live path untested until a key is added. Latency with Opus 5.5 at medium effort is
-  unmeasured; expect several seconds per compose.
-- All four bank entries are `pending`, so no verified badge can appear yet.
+- Compose takes ~10 s; the loading state covers it but it is slow for a live demo.
+  Options if needed: Sonnet 5.5 via `ANTHROPIC_MODEL`, or pre-warming the cache with
+  the demo script's intents before going on stage.
+- The four original seed bank entries are still `pending` (written by the developers).
 - Next.js 16: do not add `export const runtime` to route files (conflicts with
   `cacheComponents`).
