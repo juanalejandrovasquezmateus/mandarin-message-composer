@@ -19,7 +19,7 @@ export function DraftTray({ lines, lang, copied, onRemove, onClear, onCopy }: Pr
   return (
     <section
       aria-label="Your message"
-      className="rounded-2xl border border-line bg-card p-4 shadow-sm sm:p-5"
+      className="glass rounded-2xl border border-line p-4 sm:p-5"
     >
       <div className="flex items-baseline justify-between">
         <h3 className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -75,7 +75,7 @@ export function DraftTray({ lines, lang, copied, onRemove, onClear, onCopy }: Pr
               className={`rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
                 copied
                   ? "bg-ok-soft text-ok"
-                  : "bg-accent text-white hover:bg-accent-deep"
+                  : "bg-accent text-white shadow-[0_0_18px_rgba(255,61,127,0.45)] hover:bg-accent-deep"
               }`}
             >
               {copied ? "Copied" : "Copy message"}

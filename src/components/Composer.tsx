@@ -318,7 +318,7 @@ export function Composer() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            Say what you mean. <span className="text-accent">Know how it sounds.</span>
+            Say what you mean. <span className="neon-text">Know how it sounds.</span>
           </h1>
           <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted">
             Three natural ways to say it, a check of what it really says, and a label on
@@ -427,7 +427,7 @@ export function Composer() {
 
             {source === "live" && (
               <form
-                className="rounded-2xl border border-dashed border-line-strong bg-card/60 p-4"
+                className="rounded-2xl border border-dashed border-line-strong bg-card/40 p-4"
                 onSubmit={(e) => {
                   e.preventDefault();
                   void submitOwn();
@@ -452,7 +452,7 @@ export function Composer() {
                   <button
                     type="submit"
                     disabled={ownInput.trim().length === 0}
-                    className="rounded-full border border-ink px-4 py-2 text-sm text-ink hover:bg-ink hover:text-paper disabled:opacity-40"
+                    className="rounded-full border border-ink px-4 py-2 text-sm text-ink hover:bg-ink hover:text-night disabled:opacity-40"
                   >
                     Send for a human check
                   </button>

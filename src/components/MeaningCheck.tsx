@@ -22,7 +22,7 @@ export function MeaningCheck({ candidate, lang, intent, state, onRetry }: Props)
     <section
       aria-label="Meaning check"
       aria-busy={state.status === "loading"}
-      className="rounded-2xl border border-line bg-card p-4 shadow-sm sm:p-5"
+      className="glass animate-rise rounded-2xl border border-line p-4 sm:p-5"
     >
       <h3 className="text-xs font-medium uppercase tracking-wide text-muted">
         Meaning check

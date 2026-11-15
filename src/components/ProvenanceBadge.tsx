@@ -4,8 +4,8 @@ const STYLES: Record<Provenance, string> = {
   "verified-native": "bg-ok-soft text-ok",
   "verified-community": "bg-info-soft text-info",
   "ai-adapted": "bg-warn-soft text-warn",
-  "ai-generated": "bg-paper text-muted border border-line",
-  "user-submitted": "bg-paper text-muted border border-line-strong",
+  "ai-generated": "bg-paper/60 text-muted border border-line",
+  "user-submitted": "bg-paper/60 text-muted border border-line-strong",
 };
 
 export function ProvenanceBadge({

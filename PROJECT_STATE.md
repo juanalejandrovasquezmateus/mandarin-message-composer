@@ -190,3 +190,17 @@ see them. Claude Code's launch config (`.claude/launch.json`) uses the full npm 
   of an approved line only happens when the model's adapted line resembles it (>= 0.6
   overlap). This fixed a false match seen in testing (a "ride to school" line surfacing
   for a dinner invitation).
+
+## Phase 4D additions (2026-11-15): night look, contribution loop
+- Theme is now "Shanghai at night": navy page with soft magenta/cyan glows, glass cards,
+  neon headline, animated skyline in the nav (twinkling windows, slow aurora, lit
+  Oriental Pearl and Shanghai Tower). Tokens in `globals.css`; `ink` is light text,
+  `paper` the dark page, `night` the darkest band. Animations respect reduced motion.
+- Streak tower redrawn (`StreakPill.tsx` `Tower`): plinth, tapered body, nine floor zones
+  that light up by tier, spiral notch, slanted crown with a blinking light, glow by tier.
+- Contribution loop (`Contribute.tsx`, bottom of the home page): a native speaker picks
+  the language they speak, gets a common situation from `practice.ts`, writes how they
+  would say it, and sends it to the review queue as `user-submitted`. The section polls
+  the status and shows "Approved by …" once a reviewer decides. Approved lines enter the
+  bank and surface for learners with the checked badge, so one user's input directly
+  shapes other users' results.

@@ -63,8 +63,8 @@ export function CandidateCard({
   const zh = lang === "zh-Hans";
   return (
     <article
-      className={`rounded-2xl border bg-card p-4 shadow-sm transition-colors sm:p-5 ${
-        selected ? "border-accent ring-2 ring-accent/15" : "border-line"
+      className={`glass animate-rise rounded-2xl border p-4 transition-colors sm:p-5 ${
+        selected ? "border-accent shadow-[0_0_24px_rgba(255,61,127,0.25)]" : "border-line"
       }`}
     >
       <header className="flex items-baseline justify-between gap-3">
@@ -140,7 +140,7 @@ export function CandidateCard({
           type="button"
           onClick={onAdd}
           disabled={inDraft}
-          className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-paper transition-colors hover:bg-night disabled:cursor-default disabled:bg-ok-soft disabled:text-ok"
+          className="rounded-full bg-ink px-3.5 py-1.5 text-sm text-night transition-opacity hover:opacity-85 disabled:cursor-default disabled:bg-ok-soft disabled:text-ok disabled:opacity-100"
         >
           {inDraft ? "In your draft" : "Add to draft"}
         </button>

@@ -1,27 +1,29 @@
 @import "tailwindcss";
 
-/* Design tokens. Shanghai palette: river-mist paper, Huangpu-night ink, Bund red,
-   Pudong gold. One accent for actions, gold for highlights only. */
+/* Design tokens: Shanghai at night. Deep Huangpu navy, neon cyan and magenta from
+   the Bund reflections, Pudong gold for highlights. "paper" is the page, "ink" the text. */
 @theme {
-  --color-paper: #f5f3ee;
-  --color-card: #ffffff;
-  --color-ink: #161a22;
-  --color-night: #141a2a;
-  --color-night-soft: #1f2840;
-  --color-muted: #6b6f78;
-  --color-line: #e4e0d8;
-  --color-line-strong: #c9c3b7;
-  --color-accent: #c7372c;
-  --color-accent-deep: #9e2a21;
-  --color-accent-soft: #fbe9e6;
-  --color-gold: #c9973b;
-  --color-gold-soft: #f7efdc;
-  --color-ok: #2f6b4f;
-  --color-ok-soft: #e6f2ec;
-  --color-info: #2b5f8a;
-  --color-info-soft: #e7eff7;
-  --color-warn: #8a6d1f;
-  --color-warn-soft: #f6efd9;
+  --color-paper: #0a0e1a;
+  --color-card: #111829;
+  --color-ink: #e9edf6;
+  --color-night: #070a13;
+  --color-night-soft: #182238;
+  --color-muted: #8d97ad;
+  --color-line: #233049;
+  --color-line-strong: #34466a;
+  --color-accent: #ff3d7f;
+  --color-accent-deep: #ff6b9d;
+  --color-accent-soft: #3a1630;
+  --color-cyan: #22d3ee;
+  --color-cyan-soft: #0e2a36;
+  --color-gold: #f2c35b;
+  --color-gold-soft: #3a2f12;
+  --color-ok: #34d399;
+  --color-ok-soft: #0f2f26;
+  --color-info: #60a5fa;
+  --color-info-soft: #14233d;
+  --color-warn: #fbbf24;
+  --color-warn-soft: #3a2c0d;
 
   --font-hanzi:
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
@@ -29,20 +31,60 @@
   --font-sans:
     system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
+
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-pulse-glow: pulse-glow 2.6s ease-in-out infinite;
+  --animate-rise: rise 0.5s ease-out both;
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
+  @keyframes aurora {
+    0% { transform: translateX(-12%) translateY(-6%) rotate(0deg); }
+    100% { transform: translateX(10%) translateY(6%) rotate(8deg); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 3px var(--glow, #22d3ee)); }
+    50% { filter: drop-shadow(0 0 9px var(--glow, #22d3ee)); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--color-paper);
+  background:
+    radial-gradient(60rem 30rem at 10% -10%, rgba(255, 61, 127, 0.14), transparent 60%),
+    radial-gradient(50rem 28rem at 100% 110%, rgba(34, 211, 238, 0.12), transparent 60%),
+    var(--color-paper);
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
 
 [lang="zh-Hans"] {
   font-family: var(--font-hanzi);
+}
+
+/* Neon headline text */
+.neon-text {
+  background: linear-gradient(90deg, #ff3d7f, #f2c35b 55%, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Glass cards */
+.glass {
+  background: color-mix(in srgb, var(--color-card) 88%, transparent);
+  backdrop-filter: blur(10px);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -473,5 +473,29 @@
     },
     "chinese": "¡Felicitaciones por tu graduación! Estoy muy orgulloso de ti. Te deseo lo mejor en esta nueva etapa.",
     "pinyin": ""
+  },
+  {
+    "id": "q-56088f29",
+    "sourceLanguage": "en",
+    "targetLanguage": "es",
+    "intent": "i want to go to the park",
+    "keywords": [
+      "park"
+    ],
+    "relationship": "teacher",
+    "tone": "polite",
+    "context": "teacher",
+    "region": "other",
+    "chinese": "Quiero ir al parque.",
+    "pinyin": "",
+    "english": "I want to go to the park.",
+    "nuance": "too informal for teacher",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Juan Vasquez",
+      "note": "too informal for teacher",
+      "date": "2026-11-15"
+    }
   }
 ]

@@ -92,7 +92,7 @@ export function ReviewDesk() {
         </p>
       </header>
 
-      <section className="rounded-2xl border border-line bg-card p-4 shadow-sm sm:p-5">
+      <section className="glass rounded-2xl border border-line p-4 sm:p-5">
         <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
           <label className="text-sm">
             <span className="text-xs font-medium uppercase tracking-wide text-muted">Reviewer code</span>
@@ -118,7 +118,7 @@ export function ReviewDesk() {
             type="button"
             onClick={load}
             disabled={!canLoad || queue.status === "loading"}
-            className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper hover:bg-black disabled:opacity-40"
+            className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-night hover:opacity-85 disabled:opacity-40"
           >
             {queue.status === "loading" ? "Loading…" : "Load queue"}
           </button>
@@ -239,7 +239,7 @@ function ReviewItem({
   }
 
   return (
-    <article className="rounded-2xl border border-line bg-card p-4 shadow-sm sm:p-5">
+    <article className="glass rounded-2xl border border-line p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
         <ProvenanceBadge provenance={item.provenance} />
         <span className="rounded-full border border-line px-2 py-0.5">{relLabel}</span>
@@ -329,7 +329,7 @@ function ReviewItem({
               type="button"
               onClick={() => decide("keep")}
               disabled={busy !== null || !confirmed}
-              className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
+              className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-night hover:opacity-90 disabled:opacity-40"
             >
               {busy === "keep" ? "Screening and saving…" : "Keep as is"}
             </button>
@@ -348,7 +348,7 @@ function ReviewItem({
               type="button"
               onClick={() => decide("fix")}
               disabled={busy !== null || fixed.trim().length === 0 || !confirmed}
-              className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-40"
+              className="rounded-full bg-ok px-4 py-2 text-sm font-medium text-night hover:opacity-90 disabled:opacity-40"
             >
               {busy === "fix" ? "Screening and saving…" : "Approve with fix"}
             </button>

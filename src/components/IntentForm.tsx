@@ -42,7 +42,7 @@ export function IntentForm(p: Props) {
 
   return (
     <form
-      className="rounded-2xl border border-line bg-card p-4 shadow-sm sm:p-6"
+      className="glass rounded-2xl border border-line p-4 sm:p-6"
       onSubmit={(e) => {
         e.preventDefault();
         if (canSubmit) p.onSubmit();
@@ -61,7 +61,7 @@ export function IntentForm(p: Props) {
                 aria-pressed={active}
                 onClick={() => p.onLangChange(code)}
                 className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
-                  active ? "bg-ink text-paper" : "text-muted hover:text-ink"
+                  active ? "bg-ink text-night" : "text-muted hover:text-ink"
                 }`}
               >
                 {code === "zh-Hans" ? (
@@ -175,7 +175,7 @@ export function IntentForm(p: Props) {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-deep disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_18px_rgba(255,61,127,0.45)] transition-all hover:bg-accent-deep hover:shadow-[0_0_26px_rgba(255,61,127,0.6)] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
         >
           {p.loading ? "Composing…" : "Find ways to say it"}
         </button>
@@ -211,7 +211,7 @@ function ChipGroup({
               onClick={() => onChange(o.id)}
               className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
                 active
-                  ? "border-ink bg-ink text-paper"
+                  ? "border-ink bg-ink text-night"
                   : "border-line bg-card text-ink hover:border-line-strong"
               }`}
             >

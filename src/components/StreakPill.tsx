@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useStreak } from "@/lib/streak";
 
-/** Streak tiers. The Shanghai Tower lights up as the streak grows. */
+/** Streak tiers. The Shanghai Tower lights up floor by floor as the streak grows. */
 const TIERS = [
-  { min: 0, name: "Unlit", fill: "none", stroke: "#8b909b", glow: false },
-  { min: 1, name: "Dawn", fill: "#6b7a90", stroke: "#6b7a90", glow: false },
-  { min: 3, name: "Amber", fill: "#c9973b", stroke: "#c9973b", glow: false },
-  { min: 7, name: "Bund red", fill: "#c7372c", stroke: "#c7372c", glow: false },
-  { min: 14, name: "Neon", fill: "url(#neon)", stroke: "#3fb8d6", glow: true },
-  { min: 30, name: "Gold crown", fill: "url(#crown)", stroke: "#e2b957", glow: true },
+  { min: 0, name: "Unlit", top: "#2b3a57", bottom: "#182238", glow: "", lit: 0 },
+  { min: 1, name: "Dawn", top: "#6b7a90", bottom: "#2b3a57", glow: "", lit: 2 },
+  { min: 3, name: "Amber", top: "#f2c35b", bottom: "#6b4a14", glow: "#f2c35b", lit: 4 },
+  { min: 7, name: "Bund red", top: "#ff3d7f", bottom: "#5a1230", glow: "#ff3d7f", lit: 6 },
+  { min: 14, name: "Neon", top: "#22d3ee", bottom: "#ff3d7f", glow: "#22d3ee", lit: 8 },
+  { min: 30, name: "Gold crown", top: "#fff2c4", bottom: "#f2c35b", glow: "#f2c35b", lit: 9 },
 ] as const;
 
 type Tier = (typeof TIERS)[number];
@@ -21,34 +21,59 @@ function tierFor(days: number): Tier {
   return t;
 }
 
-export function Tower({ days, size = 22 }: { days: number; size?: number }) {
+/**
+ * Shanghai Tower, simplified but recognisable: wide plinth, tapered body with nine
+ * floor zones, the spiral notch that twists up the facade, and the slanted crown.
+ */
+export function Tower({ days, size = 22, id = "t" }: { days: number; size?: number; id?: string }) {
   const t = tierFor(days);
+  const zones = 9;
   return (
     <svg
       aria-hidden
       width={size}
-      height={size * 1.6}
-      viewBox="0 0 20 32"
-      className={t.glow ? "drop-shadow-[0_0_4px_rgba(255,220,120,0.9)]" : ""}
+      height={size * 2}
+      viewBox="0 0 40 80"
+      className={t.glow ? "animate-pulse-glow" : ""}
+      style={t.glow ? ({ "--glow": t.glow } as React.CSSProperties) : undefined}
     >
       <defs>
-        <linearGradient id="neon" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#3fb8d6" />
-          <stop offset="1" stopColor="#d64f9a" />
-        </linearGradient>
-        <linearGradient id="crown" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#c9973b" />
-          <stop offset="1" stopColor="#f7df9a" />
+        <linearGradient id={`${id}-body`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor={t.top} />
+          <stop offset="1" stopColor={t.bottom} />
         </linearGradient>
       </defs>
-      {/* twisting tower body and spire */}
+      {/* plinth */}
+      <rect x="8" y="70" width="24" height="6" rx="1" fill="#182238" stroke="#34466a" strokeWidth="1" />
+      {/* body: tapers from 20 wide at the base to 12 at the crown, crown cut on a slant */}
       <path
-        d="M4 31 C3 22 2 14 7 3 L10 0 L13 3 C18 14 17 22 16 31 Z"
-        fill={t.fill}
-        stroke={t.stroke}
+        d="M10 70 L13 12 L16 6 L27 4 L30 70 Z"
+        fill={`url(#${id}-body)`}
+        stroke="#34466a"
         strokeWidth="1"
       />
-      <path d="M7 29 C6 20 8 12 10 5" stroke="white" strokeOpacity="0.45" fill="none" strokeWidth="0.8" />
+      {/* floor zones; lit ones glow from the bottom up */}
+      {Array.from({ length: zones }, (_, i) => {
+        const y = 66 - i * 6.5;
+        const litZone = i < t.lit;
+        const w = 20 - i * 0.8;
+        const x = 20 - w / 2;
+        return (
+          <rect
+            key={i}
+            x={x}
+            y={y - 4}
+            width={w}
+            height="3.6"
+            fill={litZone ? "#ffffff" : "#000000"}
+            opacity={litZone ? 0.28 : 0.22}
+          />
+        );
+      })}
+      {/* spiral notch */}
+      <path d="M12 66 C30 52, 10 34, 26 10" stroke="#ffffff" strokeOpacity="0.55" strokeWidth="1.2" fill="none" />
+      {/* crown light */}
+      <circle cx="27" cy="4" r="1.8" fill={t.glow || "#8d97ad"} className="animate-twinkle" />
     </svg>
   );
 }
@@ -63,30 +88,33 @@ export function StreakPill() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        title="Your daily streak. Copy a message or request a human check once a day to keep it lit."
-        className="inline-flex items-center gap-1.5 rounded-full border border-paper/20 px-2.5 py-1 text-xs text-paper/90 hover:border-paper/50"
+        title="Your daily streak. Copy a message or request a human check once a day to keep the tower lit."
+        className="inline-flex items-center gap-1.5 rounded-full border border-line-strong/70 bg-card/60 px-2.5 py-1 text-xs text-ink hover:border-cyan/70"
       >
-        <Tower days={days} size={12} />
+        <Tower days={days} size={11} id="pill" />
         {days > 0 ? `${days}-day streak` : "Streak"}
       </button>
       {open && (
         <div
           role="dialog"
           aria-label="Streak tiers"
-          className="absolute right-0 z-20 mt-2 w-64 rounded-2xl border border-line bg-card p-3 text-ink shadow-lg"
+          className="glass absolute right-0 z-20 mt-2 w-72 animate-rise rounded-2xl border border-line p-3 text-ink shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
         >
           <p className="text-xs text-muted">
-            The tower lights up as your streak grows. {days > 0 ? `You're at ${days} day${days === 1 ? "" : "s"}: ${t.name}.` : "Copy a message or request a check to light it."}
+            The tower lights up floor by floor as your streak grows.{" "}
+            {days > 0
+              ? `You're at ${days} day${days === 1 ? "" : "s"}: ${t.name}.`
+              : "Copy a message or request a check to light the first floors."}
           </p>
           <ul className="mt-2 space-y-1">
-            {TIERS.map((tier) => (
+            {TIERS.map((tier, i) => (
               <li
                 key={tier.name}
                 className={`flex items-center gap-3 rounded-lg px-2 py-1 text-sm ${
-                  tier === t ? "bg-paper font-medium" : ""
+                  tier === t ? "bg-ink/10 font-medium" : ""
                 }`}
               >
-                <Tower days={tier.min} size={14} />
+                <Tower days={tier.min} size={13} id={`tier${i}`} />
                 <span className="flex-1">{tier.name}</span>
                 <span className="text-xs text-muted">
                   {tier.min === 0 ? "0 days" : `${tier.min}+ days`}
