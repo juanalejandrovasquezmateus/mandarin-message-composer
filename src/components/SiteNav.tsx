@@ -4,16 +4,18 @@ import { StreakPill } from "./StreakPill";
 /** Night band with a living Pudong skyline. Shared by every page. */
 export function SiteNav({ current }: { current: "home" | "review" }) {
   return (
-    <div className="relative overflow-hidden bg-night text-ink">
+    <div className="relative bg-night text-ink">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* slow aurora behind the skyline */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-20 -top-24 h-72 animate-aurora opacity-70"
+        className="absolute -inset-x-20 -top-24 h-72 animate-aurora opacity-70"
         style={{
           background:
             "radial-gradient(40rem 14rem at 30% 60%, rgba(255,61,127,0.28), transparent 60%), radial-gradient(36rem 12rem at 75% 50%, rgba(34,211,238,0.26), transparent 60%)",
         }}
       />
+      </div>
       <div className="relative mx-auto flex w-full max-w-3xl items-center justify-between gap-4 px-4 pt-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5" aria-label="Home">
           <span

@@ -497,5 +497,84 @@
       "note": "too informal for teacher",
       "date": "2026-11-15"
     }
+  },
+  {
+    "id": "q-1f408361",
+    "sourceLanguage": "en",
+    "targetLanguage": "es",
+    "intent": "Ask my classmate if I can borrow their notes from yesterday",
+    "keywords": [
+      "classmate",
+      "borrow",
+      "note",
+      "yesterday"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "",
+    "region": "other",
+    "chinese": "oye mi hermano, me pasas lo que hicieron ayer, porfa ?",
+    "pinyin": "",
+    "english": "Ask my classmate if I can borrow their notes from yesterday",
+    "nuance": "really casual, for good friends",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Juan Vasquez",
+      "note": "really casual, for good friends",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-94448267",
+    "sourceLanguage": "en",
+    "targetLanguage": "es",
+    "intent": "I love you babe",
+    "keywords": [
+      "love",
+      "babe"
+    ],
+    "relationship": "family",
+    "tone": "appreciative",
+    "context": "my girlfriend",
+    "region": "other",
+    "chinese": "Te amo, mi amor ❤️",
+    "pinyin": "",
+    "english": "I love you, my love ❤️",
+    "nuance": "normal, casual, common",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Juan Vasquez",
+      "note": "normal, casual, common",
+      "date": "2026-11-15"
+    }
+  },
+  {
+    "id": "q-768f3c0a",
+    "sourceLanguage": "en",
+    "targetLanguage": "es",
+    "intent": "Congratulate my classmate on winning the competition",
+    "keywords": [
+      "congratula",
+      "classmate",
+      "winn",
+      "competitio"
+    ],
+    "relationship": "classmate",
+    "tone": "friendly",
+    "context": "",
+    "region": "other",
+    "chinese": "Buena parce",
+    "pinyin": "",
+    "english": "Congratulate my classmate on winning the competition",
+    "nuance": "for close friends",
+    "verification": {
+      "status": "verified",
+      "level": "native",
+      "verifiedBy": "Juan Vasquez",
+      "note": "for close friends",
+      "date": "2026-11-15"
+    }
   }
 ]

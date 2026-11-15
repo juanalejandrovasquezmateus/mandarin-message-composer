@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "1f408361-bcad-4d39-ae4e-77f6fe07e188",
+    "status": "approved",
+    "chinese": "oye mi hermano, me pasas lo que hicieron ayer, porfa ?",
+    "pinyin": "",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Juan Vasquez",
+    "note": "really casual, for good friends",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "94448267-7770-44c5-b82f-7bff73ed6793",
+    "status": "approved",
+    "chinese": "Te amo, mi amor ❤️",
+    "pinyin": "",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Juan Vasquez",
+    "note": "normal, casual, common",
+    "date": "2026-11-15"
+  },
+  {
+    "id": "768f3c0a-7464-4e21-a8a5-cab5e5076e70",
+    "status": "approved",
+    "chinese": "Buena parce",
+    "pinyin": "",
+    "changed": false,
+    "level": "native",
+    "verifiedBy": "Juan Vasquez",
+    "note": "for close friends",
+    "date": "2026-11-15"
+  }
+]
